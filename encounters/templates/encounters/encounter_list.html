@@ -1,0 +1,18 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Encounters</h1>
+  <p>in encounter_list.html</p>
+  <p>( 20 most recent )</p>
+  {% if encounter_list %}
+  <ul>
+    {% for encounter in encounter_list %}
+      <li>
+        {{ encounter.encounter_date }} ~ {{encounter.animal}}
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>There are no encounters to display.</p>
+  {% endif %}
+{% endblock %}
