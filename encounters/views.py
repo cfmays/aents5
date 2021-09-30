@@ -58,13 +58,13 @@ class EncountersByUserListView(LoginRequiredMixin, generic.ListView):
        return Encounter.objects.filter(user=self.request.user).order_by('-encounter_date')[:10]
 
 class AllEncountersListView(generic.ListView):
+    paginate_by = 20   
     model = Encounter
-    paginate_by = 20
     template_name = 'encounters/encounters_list_all.html'
 
     def get_queryset(self):
         print('in allEncounterListView, templatename: ' + self.template_name) #to prove the correct view is being called
-        return Encounter.objects.filter(user=self.request.user).order_by('-encounter_date')
+        return Encounter.objects.all().order_by('-encounter_date')
 
 class TodaysEncountersListView(generic.ListView):
     model = Encounter
