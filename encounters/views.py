@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect
 from .forms import Open_Encounter_Form
 from django.urls import reverse
 import datetime
-from datetime import date
+from datetime import date, timedelta
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import generic
 from django.shortcuts import redirect
@@ -47,8 +47,6 @@ def open_encounter(request):
     else:
         current_user = request.user
         form=Open_Encounter_Form(initial={'encounter_date': datetime.datetime.today(),'user': current_user})
-        print (Open_Encounter_Form)
-        #form.user = request.user  #cfm this is not right 
         return render(request, 'openencounter.html', {'form': form})
 
 class EncountersByUserListView(LoginRequiredMixin, generic.ListView):
@@ -56,6 +54,7 @@ class EncountersByUserListView(LoginRequiredMixin, generic.ListView):
     template_name = 'encounters/encounters_list_by_user.html'
     
     def get_queryset(self):
+        
        return Encounter.objects.filter(user=self.request.user).order_by('-encounter_date')[:10]
 
 class AllEncountersListView(generic.ListView):
@@ -82,6 +81,22 @@ class EncounterDetailView(UpdateView):
     fields = ['encounter_date','animal','user','handling_time','crate_time','holding_time','comments']
     template_name_suffix = '_update_form'
     
+    def get_form_kwargs(self):
+        theKwargs =  super().get_form_kwargs()
+        theEncounter = self.get_object()
+        # if theEncounter.handling_time = Null and theEncounter.crate_time = Null and theEncounter.holding_time = null:
+        atime = theEncounter.handling_time
+        print('atime',atime)
+        print (theEncounter)
+        
+        print (theKwargs)
+        if theEncounter.handling_time == None and theEncounter.crate_time == None and theEncounter.holding_time == None:
+            # no times entered yet; calculate open time and put that into ht field
+            theOpenTime = datetime.datetime.now().astimezone() - theEncounter.encounter_date
+            theOpenTime = theOpenTime.seconds // 60
+            theKwargs['initial'] = {'handling_time': theOpenTime}
+        return theKwargs
+
     def get_success_url(self):
         return reverse('my-encounters')
     
