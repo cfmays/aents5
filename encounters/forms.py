@@ -8,10 +8,19 @@ class Open_Encounter_Form(ModelForm):
         model = Encounter
         # cfm: following widget adjustment does not work?
         widgets = {
+            'comments': Textarea(attrs={'rows': 4, 'cols': 40})
+        }
+        fields = ['encounter_date','animal','user','handling_time','crate_time','holding_time','comments']
+
+
+
+class old_Open_Encounter_Form(ModelForm):
+    #extra_field = forms.IntegerField()
+    class Meta:
+        model = Encounter
+        # cfm: following widget adjustment does not work?
+        widgets = {
             'Comments': Textarea(attrs={'rows': 6, 'cols': 43})
         }
         fields = ['encounter_date','animal','user','handling_time','crate_time','holding_time','comments']
 
-        # def __init__(self, *args, **kwargs):
-        #     super(Encounter, self).__init__(*args, **kwargs)
-        #     self.fields['animal'].choices = ['achoicd'] + list(Animal.objects.all().values_list('id', 'Name').order_by('Name'))

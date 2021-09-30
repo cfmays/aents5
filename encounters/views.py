@@ -47,7 +47,7 @@ def open_encounter(request):
     else:
         current_user = request.user
         form=Open_Encounter_Form(initial={'encounter_date': datetime.datetime.today(),'user': current_user})
-        
+        print (Open_Encounter_Form)
         #form.user = request.user  #cfm this is not right 
         return render(request, 'openencounter.html', {'form': form})
 

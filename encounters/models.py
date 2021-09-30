@@ -22,7 +22,7 @@ class Animal(SafeDeleteModel):
     Max_Daily = models.IntegerField(default=4)
     Inactive_Date = models.DateField(null=True, blank=True)
     Animal_Type = models.ForeignKey(Animal_Type, null=True, on_delete=models.SET_NULL, default=None)
-    Comments = models.TextField(max_length=255, blank=True)
+    Comments = models.TextField(blank=True)
     def todays_encounters(self):
         theLimitDate = datetime.today() - timedelta(days=1)
         aQs = Encounter_set.filter(encounter_date__gte = theLimitDate)
@@ -45,7 +45,7 @@ class Encounter(SafeDeleteModel):
     handling_time = models.BigIntegerField(blank=True, null=True)
     crate_time = models.BigIntegerField(blank=True, null=True)
     holding_time = models.BigIntegerField(blank=True, null=True)
-    comments = models.TextField(max_length=255, blank=True, null=True)
+    comments = models.TextField(blank=True, null=True)
 
     def __str__(self) -> str:
         return (self.user.username + '/' + self.animal.Name)
