@@ -1,10 +1,10 @@
 from django.db.models.fields import CharField, IntegerField, TextField
-from django.forms import ModelForm, Textarea, IntegerField
+from django.forms import ModelForm, Textarea, IntegerField, CharField
 from encounters.models import Animal, Encounter
 import datetime
 
 class Open_Encounter_Form(ModelForm):
-    numPerDayField = IntegerField(label='Today\'s uses', max_value=100, initial=2)
+    numPerDayField = CharField(label='Today\'s uses')
     #aNumField = CharField(name='Today',max_length=4)
 
     class Meta:
