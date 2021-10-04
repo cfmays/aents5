@@ -16,6 +16,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import UpdateView
 from django.http import HttpResponse
+from django.http import JsonResponse
 import csv
 
 def index(request):
@@ -70,11 +71,11 @@ class TodaysEncountersListView(generic.ListView):
     model = Encounter
     template_name = 'encounter_list.html'
     def get_queryset(self):
-        today = datetime.datetime.now()
-        midnight = today.replace(hour = 0,minute = 0,second = 0)
-        print ('midnight calulated')
+        today = datetime.datetime.now().date()
+        # midnight = today.replace(hour = 0,minute = 0,second = 0)
+        #print ('midnight calulated')
 
-        return Encounter.objects.filter(encounter_date__gt = midnight).order_by('-encounter_date')
+        return Encounter.objects.filter(encounter_date__gt = today).order_by('-encounter_date')
 
 class EncounterDetailView(UpdateView):
     model = Encounter
@@ -92,7 +93,7 @@ class EncounterDetailView(UpdateView):
         print (theKwargs)
         if theEncounter.handling_time == None and theEncounter.crate_time == None and theEncounter.holding_time == None:
             # no times entered yet; calculate open time and put that into ht field
-            theOpenTime = datetime.datetime.now().astimezone() - theEncounter.encounter_date
+            theOpenTime =  datetime.datetime.now() - theEncounter.encounter_date
             theOpenTime = theOpenTime.seconds // 60
             theKwargs['initial'] = {'handling_time': theOpenTime}
         return theKwargs
@@ -100,6 +101,14 @@ class EncounterDetailView(UpdateView):
     def get_success_url(self):
         return reverse('my-encounters')
     
+def load_animal_uses(request):
+    # print('in function load_animal_uses()')
+    animal_id = request.GET.get('animal')
+    uses = Encounter.objects.filter(animal=animal_id, encounter_date__gte = datetime.datetime.now().date()).count()
+    data = {'uses': uses}
+    return JsonResponse(data)
+    # return render(request, 'animal_uses_value.html', {'numPerDayField': uses})
+
 
 def logout_view(request):
     logout(request)

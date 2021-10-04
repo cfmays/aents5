@@ -1,9 +1,19 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-<form>
+<form method = 'post' id = 'encounterform' data-animal-uses-url="{% url 'ajax_load_animal_uses' %}" novalidate>
     {% csrf_token %}
+    <p>encounter_form.html</p>
     {{ form.as_p }}
     <input type="submit" value="Submit">
 </form>
+
+
+
 {% endblock %}
+
+
+{% comment %} def load_animal_uses(request):
+    animal_id = request.GET.get('animal')
+    uses = Animal.objects.filter(animal_id=animal_id)
+    return render(request, 'animal_uses_value.html', {'numPerDayField': uses}) {% endcomment %}

@@ -35,8 +35,6 @@ class Animal(SafeDeleteModel):
         ordering = ['Animal_Type']
 
 
-
-
 class Encounter(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE
     encounter_date = models.DateTimeField()

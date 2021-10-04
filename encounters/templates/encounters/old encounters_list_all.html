@@ -1,0 +1,17 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Encounters</h1>
+  {% comment %} <p>in encounter_list_all.html</p> {% endcomment %}
+  {% if encounter_list %}
+  <ul>
+    {% for encounter in encounter_list %}
+      <li>
+        {{ encounter.encounter_date }} ~ {{encounter.animal}} H:{{encounter.handling_time}} / C:{{encounter.crate_time}} / Hl:{{encounter.holding_time}}
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>There are no encounters to display.</p>
+  {% endif %}
+{% endblock %}

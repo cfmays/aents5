@@ -1,9 +1,33 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
+<h1>New Encounter</h1>
+<p>openencounter.html</p>
 <form action="/encounters/openencounter/" method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Submit">
 </form>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!--cfm  change this to use a CDN instead of jquerys site-->
+<script>
+$("#id_animal").change(function () {
+    var url = "{% url 'animal-data-API' %}"
+    console.log('url:',url)
+    var animalId = $("#id_animal").val();
+    console.log('animalID: ', animalId);
+    $.ajax({
+        url: url,
+        data: {
+            'animal': animalId
+        },
+        success: function (data) {
+            console.log('returned data:',data)
+            $("#id_numPerDayField").val(data['uses'])
+        }
+    });
+})
+</script>
+
 {% endblock %}
