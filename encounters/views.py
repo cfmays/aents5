@@ -106,9 +106,10 @@ def load_animal_uses(request):
     animal_id = request.GET.get('animal')
     uses = Encounter.objects.filter(animal=animal_id, encounter_date__gte = datetime.datetime.now().date()).count()
     theMax = Animal.objects.filter(id = animal_id).values('Max_Daily')[0]['Max_Daily']
-    print (theMax)
-    uses = str(uses) + ' ( max: ' + str(theMax) + ' )'
-    data = {'uses': uses}
+    #print (theMax)
+    #uses = str(uses) + ' ( max: ' + str(theMax) + ' )'
+    #cfm refine this to send both integets so that html can print in red if overused
+    data = {'uses': uses, 'theMax': theMax}
     return JsonResponse(data)
     # return render(request, 'animal_uses_value.html', {'numPerDayField': uses})
 

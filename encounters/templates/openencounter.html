@@ -23,8 +23,18 @@ $("#id_animal").change(function () {
             'animal': animalId
         },
         success: function (data) {
-            console.log('returned data:',data)
-            $("#id_numPerDayField").val(data['uses'])
+            console.log('returned data:',data);
+            uses = data['uses'];
+            theMax = data['theMax'];
+            if (uses > theMax) {
+                $("#id_numPerDayField").css("color", "red")
+            } else if (uses == theMax) {
+                $("#id_numPerDayField").css("color", "blue")
+            } else {
+                $("#id_numPerDayField").css("color", "black")
+            }
+            theStr = uses.toString() + ' (out of ' + theMax.toString() + ')'
+            $("#id_numPerDayField").val(theStr)
         }
     });
 })
