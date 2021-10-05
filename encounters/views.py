@@ -45,10 +45,11 @@ def open_encounter(request):
             #save the data
             aRecord=form.save()
             return HttpResponseRedirect(reverse('index'))
+        
     else:
         current_user = request.user
         form=Open_Encounter_Form(initial={'encounter_date': datetime.datetime.today(),'user': current_user})
-        return render(request, 'openencounter.html', {'form': form})
+    return render(request, 'openencounter.html', {'form': form})
 
 class EncountersByUserListView(LoginRequiredMixin, generic.ListView):
     model = Encounter
