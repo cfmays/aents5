@@ -5,12 +5,16 @@
   <p>encounter_list.html</p>
   {% if encounter_list %}
   <ul>
-    {% for encounter in encounter_list %}
+      {% for enc in encounter_list %}
       <li>
-        {{ encounter.encounter_date }} ~ {{encounter.animal}}
+      {% if enc.handling_time == null and enc.crate_time == null  and enc.handling_time == null %}
+        <a href="{% url 'encounter-detail' enc.pk %}" style="color:Red">{{enc.encounter_date}} -- {{enc.user}}~{{ enc.animal }} </a>
+      {% else %}
+        <a href="{% url 'encounter-detail' enc.pk %}" style="color:black">{{enc.encounter_date}} -- {{enc.user}}~{{ enc.animal }} </a>
+      {% endif %}
       </li>
-    {% endfor %}
-  </ul>
+      {% endfor %}
+   </ul>
   {% else %}
     <p>There are no encounters to display.</p>
   {% endif %}
