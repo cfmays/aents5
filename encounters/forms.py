@@ -4,6 +4,12 @@ from django.forms.widgets import DateTimeInput
 from encounters.models import Animal, Encounter
 import datetime
 
+# class ampmDateTimeInput(DateTimeInput):
+#     def to_python(self, value):
+#         print ('ampmDateTimeField:')
+#         print('value= ',value)
+#         return super().to_python(value)
+
 class Open_Encounter_Form(ModelForm):
     numPerDayField = CharField(label='Today\'s uses')
     #aNumField = CharField(name='Today',max_length=4)

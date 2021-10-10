@@ -34,6 +34,11 @@ class Animal(SafeDeleteModel):
     class Meta:
         ordering = ['Animal_Type']
 
+class ampmDateTimeField(models.DateTimeField):
+    def to_python(self, value):
+        print ('ampm: ', value)
+        return super().to_python(value)
+
 
 class Encounter(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE
