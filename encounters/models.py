@@ -36,13 +36,15 @@ class Animal(SafeDeleteModel):
 
 class ampmDateTimeField(models.DateTimeField):
     def to_python(self, value):
-        print ('ampm: ', value)
-        return super().to_python(value)
+        print ('initial_date_time = ',value)
+        converted_date_time = super().to_python(value)
+        print ('converted_date_time = ',converted_date_time)
+        return converted_date_time
 
 
 class Encounter(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE
-    encounter_date = models.DateTimeField()
+    encounter_date = ampmDateTimeField()
     animal = models.ForeignKey(Animal, null=True, on_delete=models.SET_NULL)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL)
     handling_time = models.BigIntegerField(blank=True, null=True)
@@ -57,4 +59,3 @@ class Encounter(SafeDeleteModel):
         return reverse("encounter-detail", kwargs={"pk": self.pk})
 
 
-    

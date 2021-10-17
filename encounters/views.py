@@ -40,6 +40,7 @@ def index(request):
 @login_required
 def open_encounter(request):
     if request.method == 'POST':
+        print('request: ', request.POST)
         form = Open_Encounter_Form(request.POST)
         if form.is_valid():
             #save the data
