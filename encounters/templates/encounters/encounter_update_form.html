@@ -4,7 +4,6 @@
 <h1>Update Encounter</h1>
     <p>encounter_update_form.html</p>
         <form method="post">{% csrf_token %}
-            <p>encounter_update_form.html</p>
             {{ form.as_p }}
             <input type="submit" value="Update">
             <a href="{{ view.get_success_url }}" class="btn btn-secondary">Cancel</a>

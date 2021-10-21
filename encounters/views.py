@@ -1,10 +1,11 @@
-from encounters.models import Animal, Encounter
+from django.views.generic.list import ListView
+from encounters.models import Animal, Encounter, Animal_Type
 from django.shortcuts import render
 from django.contrib.auth import get_user_model
 from django.views import generic
 from django import forms
 from django.http import HttpResponseRedirect
-from .forms import Open_Encounter_Form
+from .forms import Open_Encounter_Form, ampmDateTimeInput, encounter_update_form
 from django.urls import reverse
 import datetime
 from datetime import date, timedelta
@@ -40,7 +41,7 @@ def index(request):
 @login_required
 def open_encounter(request):
     if request.method == 'POST':
-        print('request: ', request.POST)
+        #print('request: ', request.POST)
         form = Open_Encounter_Form(request.POST)
         if form.is_valid():
             #save the data
@@ -79,20 +80,33 @@ class TodaysEncountersListView(generic.ListView):
 
         return Encounter.objects.filter(encounter_date__gt = today).order_by('-encounter_date')
 
+class AnimalTypeDetailView(generic.ListView):
+    model = Animal
+    fields = ['Name', 'Max_Daily','Comments']
+    template_name_suffix = '_list_form'
+
+    def get_success_url(self):
+        return reverse('animaltypes')    
+
 class EncounterDetailView(UpdateView):
     model = Encounter
-    fields = ['encounter_date','animal','user','handling_time','crate_time','holding_time','comments']
-    template_name_suffix = '_update_form'
+    form_class = encounter_update_form
+    template_name = 'encounters/encounter_update_form.html'
+    #fields = ['encounter_date','animal','user','handling_time','crate_time','holding_time','comments']
+    # widgets = {
+    #         'encounter_date': ampmDateTimeInput(format=('%m/%d/%Y  %I:%M %p'), attrs={'size':'24'}),
+    #     }
+    #template_name_suffix = '_update_form'
     
     def get_form_kwargs(self):
         theKwargs =  super().get_form_kwargs()
         theEncounter = self.get_object()
         # if theEncounter.handling_time = Null and theEncounter.crate_time = Null and theEncounter.holding_time = null:
         atime = theEncounter.handling_time
-        print('atime',atime)
-        print (theEncounter)
+        #print('atime',atime)
+        #print (theEncounter)
         
-        print (theKwargs)
+        #print (theKwargs)
         if theEncounter.handling_time == None and theEncounter.crate_time == None and theEncounter.holding_time == None:
             # no times entered yet; calculate open time and put that into ht field
             theOpenTime =  datetime.datetime.now() - theEncounter.encounter_date
@@ -102,6 +116,14 @@ class EncounterDetailView(UpdateView):
 
     def get_success_url(self):
         return reverse('my-encounters')
+
+class AnimalTypesListView(generic.ListView):
+    model = Animal_Type
+    template_name = 'encounters/animal_types_list.html'
+
+    def get_queryset(self):
+        return Animal_Type.objects.order_by('animal_type')
+
     
 def load_animal_uses(request):
     # print('in function load_animal_uses()')
@@ -134,25 +156,3 @@ def export_data_view(request):
     return response
 
     
-
-# class ContactForm(forms.Form):
-#       name = forms.CharField(required=False)
-#       email = forms.EmailField(label='Your email')
-#       comment = forms.CharField(widget=forms.Textarea)
-#       def __init__(self, *args, **kwargs):
-#             # Get 'initial' argument if any
-#             initial_arguments = kwargs.get('initial', None)
-#             updated_initial = {}
-#             if initial_arguments:
-#                   # We have initial arguments, fetch 'user' placeholder variable if any
-#                   user = initial_arguments.get('user',None)
-#                   # Now update the form's initial values if user
-#                   if user:
-#                         updated_initial['name'] = getattr(user, 'first_name', None)
-#                         updated_initial['email'] = getattr(user, 'email', None)
-#             # You can also initialize form fields with hardcoded values
-#             # or perform complex DB logic here to then perform initialization
-#             updated_initial['comment'] = 'Please provide a comment'
-#             # Finally update the kwargs initial reference
-#             kwargs.update(initial=updated_initial)
-#             super(ContactForm, self).__init__(*args, **kwargs)
