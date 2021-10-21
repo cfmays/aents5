@@ -46,7 +46,7 @@ class Encounter(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE
     encounter_date = models.DateTimeField()
     animal = models.ForeignKey(Animal, null=True, on_delete=models.SET_NULL)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL,verbose_name='Handler')
     handling_time = models.BigIntegerField(blank=True, null=True)
     crate_time = models.BigIntegerField(blank=True, null=True)
     holding_time = models.BigIntegerField(blank=True, null=True)
