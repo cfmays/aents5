@@ -57,5 +57,5 @@ class encounter_update_form(ModelForm):
         widgets = {
             'comments': Textarea(attrs={'rows': 4, 'cols': 40}),
             'encounter_date': ampmDateTimeInput(format=('%m/%d/%Y  %I:%M %p'), attrs={'size':'24'}),
-            'endTimeField': ampmDateTimeInput(format=('%m/%d/%Y CW  %I:%M %p'), attrs={'size':'24'}),
+            'endTimeField': ampmDateTimeInput(format=('%m/%d/%Y  %I:%M %p'), attrs={'size':'24'}),
         }
