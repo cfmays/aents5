@@ -1,40 +1,28 @@
 from django.db.models.fields import CharField, IntegerField, TextField
 from django.forms import ModelForm, Textarea, IntegerField, CharField, DateTimeField
 from django.forms.widgets import DateTimeInput
+from django.utils import timezone, formats
 from encounters.models import Animal, Encounter
 from django.views.generic.edit import UpdateView
 
-import datetime
 
 class ampmDateTimeInput(DateTimeInput):
-    def value_from_datadict(self, data, files, name):        
-        theRawDate = data['encounter_date']
-        theConvertedDate = theRawDate
-        # check if there is an AM or PM on the end
-        if (len(theRawDate) > 2): 
-            theStr = theRawDate[-2:]
-            #print ('theStr: ', theStr)
-            if (theStr == 'PM'):
-                #convert to 24 hr format
-                #get the hours
-                theHrsStr = theRawDate[12:14]
-                theHrs = int(theHrsStr)
-                theHrs = theHrs + 12
-                #pad with leading zero if needed cfm; is this EVER needed?
-                theHrsStr = str(theHrs)
-                if (len(theHrsStr) == 1):
-                    theHrsStr = '0' + theHrsStr
-                theConvertedDate = theConvertedDate[0:11] + theHrsStr + theConvertedDate[14:17]
-            elif (theStr == 'AM'):
-                #just strip the AM
-                theConvertedDate = theConvertedDate[0:17] 
-            #else just pass the existing string; the user has removed the AM or PM manually    
-
-        # create a mutable instance of the data     
-        aNewData = data.copy()
-        aNewData['encounter_date'] = theConvertedDate
-        return(super().value_from_datadict(aNewData, files, name))
-        
+    def value_from_datadict(self, data, files, name):
+        ACCEPTED_FORMATS = [self.format] + formats.ISO_INPUT_FORMATS['DATETIME_INPUT_FORMATS']
+        orig_value = super(ampmDateTimeInput, self).value_from_datadict(data, files, name)
+        value = None
+        for format in ACCEPTED_FORMATS:
+            try:
+                value = timezone.datetime.strptime(orig_value, self.format)
+            except ValueError:
+                # This is not a datetime in the this format; keep going
+                pass
+            else:
+                break
+        if value is None:
+            # We didn't find a format that works, pass back the original
+            value = orig_value
+        return value
 
 
 class Open_Encounter_Form(ModelForm):
@@ -45,7 +33,7 @@ class Open_Encounter_Form(ModelForm):
         fields = ['encounter_date','animal','numPerDayField','user','handling_time','crate_time','holding_time','comments']
         widgets = {
             'comments': Textarea(attrs={'rows': 4, 'cols': 40}),
-            'encounter_date': ampmDateTimeInput(format=('%m/%d/%Y  %I:%M %p'), attrs={'size':'24'}),
+            'encounter_date': ampmDateTimeInput(format='%m/%d/%Y  %I:%M %p', attrs={'size': '24'}),
         }
 
 class encounter_update_form(ModelForm):
@@ -55,5 +43,5 @@ class encounter_update_form(ModelForm):
         fields = ['encounter_date','animal','user','handling_time','crate_time','holding_time','comments']
         widgets = {
             'comments': Textarea(attrs={'rows': 4, 'cols': 40}),
-            'encounter_date': ampmDateTimeInput(format=('%m/%d/%Y  %I:%M %p'), attrs={'size':'24'}),
+            'encounter_date': ampmDateTimeInput(format='%m/%d/%Y  %I:%M %p', attrs={'size':'24'}),
         }
