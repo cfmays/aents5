@@ -37,8 +37,6 @@ class ampmDateTimeInput(DateTimeInput):
         
 
 
-    
-
 class Open_Encounter_Form(ModelForm):
     numPerDayField = CharField(label='Today\'s uses')
 
@@ -59,15 +57,3 @@ class encounter_update_form(ModelForm):
             'comments': Textarea(attrs={'rows': 4, 'cols': 40}),
             'encounter_date': ampmDateTimeInput(format=('%m/%d/%Y  %I:%M %p'), attrs={'size':'24'}),
         }
-
-
-
-class old_Open_Encounter_Form(ModelForm):
-
-    class Meta:
-        model = Encounter
-        widgets = {
-            'Comments': Textarea(attrs={'rows': 6, 'cols': 43})
-        }
-        fields = ['encounter_date','animal','user','handling_time','crate_time','holding_time','comments']
-

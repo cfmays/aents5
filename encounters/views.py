@@ -92,21 +92,11 @@ class EncounterDetailView(UpdateView):
     model = Encounter
     form_class = encounter_update_form
     template_name = 'encounters/encounter_update_form.html'
-    #fields = ['encounter_date','animal','user','handling_time','crate_time','holding_time','comments']
-    # widgets = {
-    #         'encounter_date': ampmDateTimeInput(format=('%m/%d/%Y  %I:%M %p'), attrs={'size':'24'}),
-    #     }
-    #template_name_suffix = '_update_form'
     
     def get_form_kwargs(self):
         theKwargs =  super().get_form_kwargs()
         theEncounter = self.get_object()
-        # if theEncounter.handling_time = Null and theEncounter.crate_time = Null and theEncounter.holding_time = null:
-        atime = theEncounter.handling_time
-        #print('atime',atime)
-        #print (theEncounter)
         
-        #print (theKwargs)
         if theEncounter.handling_time == None and theEncounter.crate_time == None and theEncounter.holding_time == None:
             # no times entered yet; calculate open time and put that into ht field
             theOpenTime =  datetime.datetime.now() - theEncounter.encounter_date
