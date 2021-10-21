@@ -43,6 +43,11 @@
     {{ form.holding_time }}
 </div>
 <div class="fieldWrapper">
+    {{ form.endTimeField.errors }}
+    <label for="{{ form.endTimeField.id_for_label }}">Return time:</label>
+    {{ form.endTimeField }}
+</div>
+<div class="fieldWrapper">
     {{ form.comments.errors }}
     <label for="{{ form.comments.id_for_label }}">Comments</label>
     {{ form.comments }}
