@@ -1,5 +1,5 @@
 from django.db.models.fields import CharField, IntegerField, TextField
-from django.forms import ModelForm, Textarea, IntegerField, CharField, DateTimeField
+from django.forms import ModelForm, Textarea, IntegerField, CharField, DateTimeField, TextInput
 from django.forms.widgets import DateTimeInput
 from django.utils import timezone, formats
 from encounters.models import Animal, Encounter
@@ -25,15 +25,16 @@ class ampmDateTimeInput(DateTimeInput):
             value = orig_value
         return value
         
-
-
 class Open_Encounter_Form(ModelForm):
-    numPerDayField = CharField(label='Today\'s uses')
+    numPerDayField = CharField(label='Today\'s uses',disabled=True)
 
     class Meta:
         model = Encounter        
         fields = ['encounter_date','animal','numPerDayField','user','handling_time','crate_time','holding_time','comments']
         widgets = {
+            'handling_time': TextInput(attrs={'min':0,'max': '1000000','type': 'number'}),
+            'crate_time': TextInput(attrs={'min':0,'max': '1000000','type': 'number'}),
+            'holding_time': TextInput(attrs={'min':0,'max': '1000000','type': 'number'}),
             'comments': Textarea(attrs={'rows': 4, 'cols': 40}),
             'encounter_date': ampmDateTimeInput(format='%m/%d/%Y  %I:%M %p', attrs={'size': '24'}),
         }
