@@ -46,6 +46,9 @@ class encounter_update_form(ModelForm):
         model = Encounter        
         fields = ['encounter_date','animal','user','handling_time','crate_time','holding_time','endTimeField','comments']
         widgets = {
+            'handling_time': TextInput(attrs={'min':0,'max': '1000000','type': 'number'}),
+            'crate_time': TextInput(attrs={'min':0,'max': '1000000','type': 'number'}),
+            'holding_time': TextInput(attrs={'min':0,'max': '1000000','type': 'number'}),
             'comments': Textarea(attrs={'rows': 4, 'cols': 40}),
             'encounter_date': ampmDateTimeInput(format='%m/%d/%Y  %I:%M %p', attrs={'size':'24'}),
         }
