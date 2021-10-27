@@ -58,4 +58,20 @@ class Encounter(SafeDeleteModel):
     def get_absolute_url(self):
         return reverse("encounter-detail", kwargs={"pk": self.pk})
 
+    def get_total_minutes(self):
+        print ('self: ', self)
+        if (self.handling_time < 1 and self.crate_time < 1 and self.holding_time < 1):
+            theMinutes =  datetime.datetime.now() - self.encounter_date
+            theMinutes = theMinutes.seconds // 60
+        else:
+            theMinutes = 0
+            if (self.handling_time is not None):
+                theMinutes += self.handling_time
+            if (self.crate_time is not None):
+                theMinutes += self.crate_time
+            if (self.holding_time is not None):
+                theMinutes += self.holding_time
+        print ('returning theMinutes:', theMinutes)
+        return theMinutes
+
 

@@ -5,58 +5,37 @@
     <p>encounter_update_form.html</p>
         <form method="post">{% csrf_token %}
             
-            
-    {{ form.non_field_errors }}
-<div class="fieldWrapper">
-    {{ form.encounter_date.errors }}
-    <label for="{{ form.encounter_date.id_for_label }}">Encounter date:</label>
-    {{ form.encounter_date }}
-</div>
-<div class="fieldWrapper">
-    {{ form.animal.errors }}
-    <label for="{{ form.animal.id_for_label }}">Animal:</label>
-    {{ form.animal }}
-</div>
-<div class="fieldWrapper">
-    {{ form.numPerDayField.errors }}
-    <label for="{{ form.numPerDayField.id_for_label }}">Today's uses:</label>
-    {{ form.numPerDayField }}
-</div>
-<div class="fieldWrapper">
-    {{ form.user.errors }}
-    <label for="{{ form.user.id_for_label }}">Handler:</label>
-    {{ form.user }}
-</div>
-<div class="fieldWrapper">
-    {{ form.handling_time.errors }} 
-    <label for="{{ form.handling_time.id_for_label }}">Handling time:</label>
-    {{ form.handling_time }}
-</div>
-<div class="fieldWrapper">
-    {{ form.crate_time.errors }}
-    <label for="{{ form.crate_time.id_for_label }}">Crate time:</label>
-    {{ form.crate_time }}
-</div>
-<div class="fieldWrapper">
-    {{ form.holding_time.errors }}
-    <label for="{{ form.holding_time.id_for_label }}">Holding time:</label>
-    {{ form.holding_time }}
-</div>
-<div class="fieldWrapper">
-    {{ form.endTimeField.errors }}
-    <label for="{{ form.endTimeField.id_for_label }}">Return time:</label>
-    {{ form.endTimeField }}
-</div>
-<div class="fieldWrapper">
-    {{ form.comments.errors }}
-    <label for="{{ form.comments.id_for_label }}">Comments</label>
-    {{ form.comments }}
-</div>
+            {{form.as_p}}
 
 
 
             <input type="submit" value="Update">
             <a href="{{ view.get_success_url }}" class="btn btn-secondary">Cancel</a>
         </form>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    // calculate the total minutes
+    // first, if any minutes are already there, use those
+    if (document.getElementById('id_handling_time').value < 1 ) {
+        // no minutes there yet; use the current time to calc
+        var theEndTime = new Date();
+        var theStartTime = new Date(document.getElementById('id_encounter_date').value);
+        console.log ('start:',theStartTime);
+        console.log ('end:',theEndTime);
+        var theMinutes = Math.round((((theEndTime-theStartTime) % 86400000) % 3600000) / 60000);
+        document.getElementById('id_totalTimeField').value = theMinutes;
+
+    } else {
+        console.log('else');
+        console.log(document.getElementById('id_handling_time').value);
+    }
+
+
+});
+
+
+</script>
     </p>
 {% endblock %}
