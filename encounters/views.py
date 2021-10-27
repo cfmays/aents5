@@ -92,17 +92,19 @@ class EncounterDetailView(UpdateView):
     model = Encounter
     form_class = encounter_update_form
     template_name = 'encounters/encounter_update_form.html'
-    
-    def get_form_kwargs(self):
-        theKwargs =  super().get_form_kwargs()
-        theEncounter = self.get_object()
+    extra_field = 'totalminutes'
+
+    # cfm: the following was deprecated by front end script
+    # def get_form_kwargs(self):
+    #     theKwargs =  super().get_form_kwargs()
+    #     theEncounter = self.get_object()
         
-        if theEncounter.handling_time == None and theEncounter.crate_time == None and theEncounter.holding_time == None:
-            # no times entered yet; calculate open time and put that into ht field
-            theOpenTime =  datetime.datetime.now() - theEncounter.encounter_date
-            theOpenTime = theOpenTime.seconds // 60
-            theKwargs['initial'] = {'handling_time': theOpenTime}
-        return theKwargs
+    #     if theEncounter.handling_time == None and theEncounter.crate_time == None and theEncounter.holding_time == None:
+    #         # no times entered yet; calculate open time and put that into ht field
+    #         theOpenTime =  datetime.datetime.now() - theEncounter.encounter_date
+    #         theOpenTime = theOpenTime.seconds // 60
+    #         theKwargs['initial'] = {'handling_time': theOpenTime}
+    #     return theKwargs
 
     def get_success_url(self):
         return reverse('my-encounters')

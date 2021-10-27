@@ -26,7 +26,7 @@ class ampmDateTimeInput(DateTimeInput):
         return value
         
 class Open_Encounter_Form(ModelForm):
-    numPerDayField = CharField(label='Today\'s uses',disabled=True)
+    numPerDayField = CharField(label='Today\'s uses',disabled=True,required=False)
 
     class Meta:
         model = Encounter        
@@ -40,11 +40,12 @@ class Open_Encounter_Form(ModelForm):
         }
 
 class encounter_update_form(ModelForm):
-    endTimeField = DateTimeField(label='Time returned', initial=datetime.datetime.now(), widget=ampmDateTimeInput(format='%m/%Y  %I:%M %p', attrs={'size':'24'}))
+    endTimeField = DateTimeField(label='Time returned', initial=datetime.datetime.now(), widget=ampmDateTimeInput(format='%m/%d%Y  %I:%M %p', attrs={'size':'24'}))
+    totalTimeField = IntegerField(label='Minutes', widget=TextInput(attrs={'min':0,'max': '1000000','type': 'number'}))
 
     class Meta:
         model = Encounter        
-        fields = ['encounter_date','animal','user','handling_time','crate_time','holding_time','endTimeField','comments']
+        fields = ['encounter_date','animal','user','handling_time','crate_time','holding_time','endTimeField','totalTimeField','comments']
         widgets = {
             'handling_time': TextInput(attrs={'min':0,'max': '1000000','type': 'number'}),
             'crate_time': TextInput(attrs={'min':0,'max': '1000000','type': 'number'}),
@@ -52,3 +53,4 @@ class encounter_update_form(ModelForm):
             'comments': Textarea(attrs={'rows': 4, 'cols': 40}),
             'encounter_date': ampmDateTimeInput(format='%m/%d/%Y  %I:%M %p', attrs={'size':'24'}),
         }
+
