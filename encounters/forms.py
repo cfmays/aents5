@@ -26,7 +26,7 @@ class ampmDateTimeInput(DateTimeInput):
         return value
         
 class Open_Encounter_Form(ModelForm):
-    numPerDayField = CharField(label='Today\'s uses',disabled=True)
+    numPerDayField = CharField(label='Today\'s uses',disabled=True,required=False)
 
     class Meta:
         model = Encounter        

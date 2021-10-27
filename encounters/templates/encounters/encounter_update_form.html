@@ -24,7 +24,8 @@ $(document).ready(function(){
         var theStartTime = new Date(document.getElementById('id_encounter_date').value);
         console.log ('start:',theStartTime);
         console.log ('end:',theEndTime);
-        var theMinutes = Math.round((((theEndTime-theStartTime) % 86400000) % 3600000) / 60000);
+        console.log (theEndTime - theStartTime);
+        var theMinutes = Math.round((theEndTime-theStartTime) / 60000);
         document.getElementById('id_totalTimeField').value = theMinutes;
 
     } else {
