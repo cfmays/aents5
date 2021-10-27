@@ -40,7 +40,7 @@ class Open_Encounter_Form(ModelForm):
         }
 
 class encounter_update_form(ModelForm):
-    endTimeField = DateTimeField(label='Time returned', initial=datetime.datetime.now(), widget=ampmDateTimeInput(format='%m/%d/%Y  %I:%M %p', attrs={'size':'24'}))
+    endTimeField = DateTimeField(label='Time returned', initial=datetime.datetime.now(), widget=ampmDateTimeInput(format='%m/%Y  %I:%M %p', attrs={'size':'24'}))
 
     class Meta:
         model = Encounter        
