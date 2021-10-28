@@ -16,16 +16,16 @@
 <script>
 $("#id_animal").change(function () {
     var url = "{% url 'animal-data-API' %}"
-    console.log('url:',url)
+    //console.log('url:',url)
     var animalId = $("#id_animal").val();
-    console.log('animalID: ', animalId);
+    //console.log('animalID: ', animalId);
     $.ajax({
         url: url,
         data: {
             'animal': animalId
         },
         success: function (data) {
-            console.log('returned data:',data);
+            //console.log('returned data:',data);
             uses = data['uses'];
             theMax = data['theMax'];
             if (uses > theMax) {
