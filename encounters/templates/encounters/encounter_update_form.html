@@ -33,8 +33,8 @@ function ampmFormat(theDate) {
         var theHourStr = '0' + lclDate.getHours();
     } else {
         theHourStr = lclDate.getHours();
-    }
-    var theDateStr = lclDate.getMonth() + '/' + lclDate.getDate() + '/' + lclDate.getFullYear() + '  ' + theHourStr + ':' + theMinuteStr + ' ' + theSuffix;
+    } // don't forget month is zero based
+    var theDateStr = (lclDate.getMonth() + 1) + '/' + lclDate.getDate() + '/' + lclDate.getFullYear() + '  ' + theHourStr + ':' + theMinuteStr + ' ' + theSuffix;
     return theDateStr;
 }
 
@@ -60,12 +60,13 @@ $(document).ready(function(){
     // first, if any minutes are already there, use those
     if ((document.getElementById('id_handling_time').value > 0 )  || (document.getElementById('id_crate_time').value > 0 )|| (document.getElementById('id_holding_time').value > 0 )) {
         // some minutes are there; add them up
+        console.log('handling:', document.getElementById('id_holding_time').value);
         console.log('found minutes::',document.getElementById('id_handling_time').value,'/',document.getElementById('id_crate_time').value,'/',document.getElementById('id_holding_time').value)
         var theMinutes = Number(document.getElementById('id_handling_time').value) +
             Number(document.getElementById('id_crate_time').value) +
             Number(document.getElementById('id_holding_time').value);
         // and caclulate the time returned
-        //console.log('theMinutes: ', theMinutes);
+        console.log('theMinutes: ', theMinutes);
         var theEndTime = new Date(theStartTime.getTime() + theMinutes * 60000);
     } else {
         // no minutes there yet; use the current time to calc
@@ -74,18 +75,19 @@ $(document).ready(function(){
         //console.log ('end:',theEndTime);
         //console.log (theEndTime - theStartTime);
         var theMinutes = Math.round((theEndTime-theStartTime) / 60000);       
-
+        // disable crate & holding unless/until handling is changed
+        document.getElementById('id_crate_time').disabled = true;
+        document.getElementById('id_holding_time').disabled = true;       document.getElementById('id_handling_time').value = theMinutes;
     }
     //console.log('theMinutes:', theMinutes);
     //console.log('theEndTime:', theEndTime);
     document.getElementById('id_totalTimeField').value = theMinutes;
-    document.getElementById('id_handling_time').value = theMinutes;
-    // disable crate & holding unless/until handling is changed
-    document.getElementById('id_crate_time').disabled = true;
-    document.getElementById('id_holding_time').disabled = true;
+
     // format the date
+    console.log('end time bewfore formatting:', theEndTime);
     var theDateStr = ampmFormat(theEndTime);
     document.getElementById('id_endTimeField').value = theDateStr;
+    console.log('after formatting:', theDateStr);
 });
 
 $("#id_handling_time").change(function () {
@@ -95,6 +97,7 @@ $("#id_handling_time").change(function () {
         var theNewHT = Number(document.getElementById('id_handling_time').value);
         document.getElementById('id_crate_time').disabled = false;
         document.getElementById('id_crate_time').value = Number(document.getElementById('id_totalTimeField').value) - theNewHT;
+        document.getElementById('id_crate_time').focus();
     }
 })
 
@@ -105,6 +108,7 @@ $("#id_crate_time").change(function() {
         var theTotal = Number(document.getElementById('id_totalTimeField').value);
         document.getElementById('id_holding_time').disabled = false;
         document.getElementById('id_holding_time').value = theTotal - theNewHT - theNewCT;
+        document.getElementById('id_holding_time').focus();
     }
 })
 
@@ -112,14 +116,20 @@ $("#id_endTimeField").change(function() {
     // user changed the return time; reset to 'open' status
     // first, parse the end time to a date
     var theNewET = new Date(document.getElementById('id_endTimeField').value);
-    //console.log('the new returned time is: ', theNewET);
+
+    console.log('the new returned time is: ', theNewET);
     theTotal = getTotalMinutes();
     document.getElementById('id_totalTimeField').value = theTotal;
     document.getElementById('id_handling_time').value = theTotal;
     document.getElementById('id_crate_time').value = '';
-    document.getElementById('id_crate_time').enabled = false;
+    //console.log(document.getElementById('id_crate_time').enabled);
+    document.getElementById('id_crate_time').disabled = true;
+    //console.log(document.getElementById('id_crate_time').enabled);
+
     document.getElementById('id_holding_time').value = '';
-    document.getElementById('id_holding_time').enabled = false;
+    document.getElementById('id_holding_time').disabled = true;
+    var aStr  = 'Adjusting the Time Returned resulted in a total out time of ' + theTotal + ' minutes, which will be put into the HANDLING field.  You can edit handling, crate and holding if needed.';
+    alert(aStr);
 })
 
 </script>

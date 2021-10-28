@@ -42,9 +42,12 @@ class Open_Encounter_Form(ModelForm):
 class encounter_update_form(ModelForm):
     endTimeField = DateTimeField(label='Time returned', 
         initial=datetime.datetime.now(), 
-        widget=ampmDateTimeInput(format='%m/%d%Y  %I:%M %p', attrs={'size':'24'}),
+        widget=ampmDateTimeInput(format='%m/%d%Y  %I:%M %p', attrs={'size':'24','tabindex':50}),
         required= False)
-    totalTimeField = IntegerField(label='Total Minutes', widget=TextInput(attrs={'min':0,'max': '1000000','type': 'number'}), required=False)
+    totalTimeField = IntegerField(label='Total Minutes', 
+        widget=TextInput(attrs={'min':0,'max': '1000000','type': 'number','tabindex':51}), 
+        required=False,
+        disabled = True)
 
     class Meta:
         model = Encounter        
