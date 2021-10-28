@@ -15,27 +15,90 @@
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
+function ampmFormat(theDate) {
+    console.log('in ampmFormat, theDate= ', theDate);
+    var lclDate = new Date(theDate);
+    if (lclDate.getHours() > 11) {
+        theSuffix = 'PM';
+        lclDate.setHours(lclDate.getHours() - 12);
+    } else {
+        theSuffix = 'AM';
+    }
+    if (lclDate.getMinutes().toString().length < 2) {
+        var theMinuteStr = '0' + lclDate.getMinutes();
+    } else {
+        theMinuteStr = lclDate.getMinutes();
+    }    
+    if (lclDate.getHours().toString().length < 2) {
+        var theHourStr = '0' + lclDate.getHours();
+    } else {
+        theHourStr = lclDate.getHours();
+    }
+    var theDateStr = lclDate.getMonth() + '/' + lclDate.getDate() + '/' + lclDate.getFullYear() + '  ' + theHourStr + ':' + theMinuteStr + ' ' + theSuffix;
+    return theDateStr;
+}
+
+function getTotalMinutes() {
+    console.log('in getTotalMinutes');
+    if ((document.getElementById('id_handling_time').value > 0 )  || (document.getElementById('id_crate_time').value > 0 )|| (document.getElementById('id_holding_time').value > 0 )) {
+
+        var theMinutes = Number(document.getElementById('id_handling_time').value) +  
+            Number(document.getElementById('id_crate_time').value) +  
+            Number(document.getElementById('id_holding_time').value); 
+    } else {
+        var theMinutes = 0;
+    }
+    return theMinutes;
+}
+
+function reviseEndTime() {
+    var theStartTime = new Date(document.getElementById('id_encounter_date').value);
+
+}
+
 $(document).ready(function(){
+    console.log('in document.ready');
     // calculate the total minutes
+    var theStartTime = new Date(document.getElementById('id_encounter_date').value);
+
     // first, if any minutes are already there, use those
-    if (document.getElementById('id_handling_time').value < 1 ) {
+    if ((document.getElementById('id_handling_time').value > 0 )  || (document.getElementById('id_crate_time').value > 0 )|| (document.getElementById('id_holding_time').value > 0 )) {
+        // some miutes are there; add them up
+        console.log('found minutes')
+        var theMinutes = getTotalMinutes();
+        // and caclulate the time returned
+        console.log('theMinutes: ', theMinutes);
+        var theEndTime = new Date(theStartTime.getTime() + theMinutes * 60000);
+
+        
+    } else {
         // no minutes there yet; use the current time to calc
         var theEndTime = new Date();
-        var theStartTime = new Date(document.getElementById('id_encounter_date').value);
         console.log ('start:',theStartTime);
         console.log ('end:',theEndTime);
         console.log (theEndTime - theStartTime);
-        var theMinutes = Math.round((theEndTime-theStartTime) / 60000);
-        document.getElementById('id_totalTimeField').value = theMinutes;
+        var theMinutes = Math.round((theEndTime-theStartTime) / 60000);       
 
-    } else {
-        console.log('else');
-        console.log(document.getElementById('id_handling_time').value);
     }
-
-
+    console.log('theMinutes:', theMinutes);
+    console.log('theEndTime:', theEndTime);
+    document.getElementById('id_totalTimeField').value = theMinutes;
+    // format the date
+    var theDateStr = ampmFormat(theEndTime);
+    document.getElementById('id_endTimeField').value = theDateStr;
 });
 
+$("#id_handling_time").change(function () {
+    console.log('in id_handling_time.change function');
+    //user changed handling time; update total minutes
+    theNewHT = document.getElementById('id_handling_time');
+    // calc total minutes
+    theMinutes = getTotalMinutes();
+    document.getElementById('id_totalTimeField').value = theMinutes;
+    // revise the end time in case it changed
+
+
+})
 
 </script>
     </p>
