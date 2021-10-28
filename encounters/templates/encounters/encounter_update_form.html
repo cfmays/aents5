@@ -16,7 +16,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
 function ampmFormat(theDate) {
-    console.log('in ampmFormat, theDate= ', theDate);
+    //console.log('in ampmFormat, theDate= ', theDate);
     var lclDate = new Date(theDate);
     if (lclDate.getHours() > 11) {
         theSuffix = 'PM';
@@ -40,14 +40,10 @@ function ampmFormat(theDate) {
 
 function getTotalMinutes() {
     console.log('in getTotalMinutes');
-    if ((document.getElementById('id_handling_time').value > 0 )  || (document.getElementById('id_crate_time').value > 0 )|| (document.getElementById('id_holding_time').value > 0 )) {
-
-        var theMinutes = Number(document.getElementById('id_handling_time').value) +  
-            Number(document.getElementById('id_crate_time').value) +  
-            Number(document.getElementById('id_holding_time').value); 
-    } else {
-        var theMinutes = 0;
-    }
+    var theEndTime = new Date(document.getElementById('id_endTimeField').value);
+    var theStartTime = new Date(document.getElementById('id_encounter_date').value);
+    var theMinutes = Math.round((theEndTime - theStartTime)/60000);
+    console.log('calculated: ', theMinutes);
     return theMinutes;
 }
 
@@ -57,47 +53,73 @@ function reviseEndTime() {
 }
 
 $(document).ready(function(){
-    console.log('in document.ready');
+    //console.log('in document.ready');
     // calculate the total minutes
     var theStartTime = new Date(document.getElementById('id_encounter_date').value);
 
     // first, if any minutes are already there, use those
     if ((document.getElementById('id_handling_time').value > 0 )  || (document.getElementById('id_crate_time').value > 0 )|| (document.getElementById('id_holding_time').value > 0 )) {
-        // some miutes are there; add them up
-        console.log('found minutes')
-        var theMinutes = getTotalMinutes();
+        // some minutes are there; add them up
+        console.log('found minutes::',document.getElementById('id_handling_time').value,'/',document.getElementById('id_crate_time').value,'/',document.getElementById('id_holding_time').value)
+        var theMinutes = Number(document.getElementById('id_handling_time').value) +
+            Number(document.getElementById('id_crate_time').value) +
+            Number(document.getElementById('id_holding_time').value);
         // and caclulate the time returned
-        console.log('theMinutes: ', theMinutes);
+        //console.log('theMinutes: ', theMinutes);
         var theEndTime = new Date(theStartTime.getTime() + theMinutes * 60000);
-
-        
     } else {
         // no minutes there yet; use the current time to calc
         var theEndTime = new Date();
-        console.log ('start:',theStartTime);
-        console.log ('end:',theEndTime);
-        console.log (theEndTime - theStartTime);
+        //console.log ('start:',theStartTime);
+        //console.log ('end:',theEndTime);
+        //console.log (theEndTime - theStartTime);
         var theMinutes = Math.round((theEndTime-theStartTime) / 60000);       
 
     }
-    console.log('theMinutes:', theMinutes);
-    console.log('theEndTime:', theEndTime);
+    //console.log('theMinutes:', theMinutes);
+    //console.log('theEndTime:', theEndTime);
     document.getElementById('id_totalTimeField').value = theMinutes;
+    document.getElementById('id_handling_time').value = theMinutes;
+    // disable crate & holding unless/until handling is changed
+    document.getElementById('id_crate_time').disabled = true;
+    document.getElementById('id_holding_time').disabled = true;
     // format the date
     var theDateStr = ampmFormat(theEndTime);
     document.getElementById('id_endTimeField').value = theDateStr;
 });
 
 $("#id_handling_time").change(function () {
-    console.log('in id_handling_time.change function');
-    //user changed handling time; update total minutes
-    theNewHT = document.getElementById('id_handling_time');
-    // calc total minutes
-    theMinutes = getTotalMinutes();
-    document.getElementById('id_totalTimeField').value = theMinutes;
-    // revise the end time in case it changed
+    //console.log('in id_handling_time.change function');
+    //user changed handling time; show crate time and put remaining minutes there IF it is currently disabed
+    if (document.getElementById('id_crate_time').disabled == true) {
+        var theNewHT = Number(document.getElementById('id_handling_time').value);
+        document.getElementById('id_crate_time').disabled = false;
+        document.getElementById('id_crate_time').value = Number(document.getElementById('id_totalTimeField').value) - theNewHT;
+    }
+})
 
+$("#id_crate_time").change(function() {
+    if(document.getElementById('id_holding_time').disabled == true) {
+        var theNewHT = Number(document.getElementById('id_handling_time').value);
+        var theNewCT = Number(document.getElementById('id_crate_time').value);
+        var theTotal = Number(document.getElementById('id_totalTimeField').value);
+        document.getElementById('id_holding_time').disabled = false;
+        document.getElementById('id_holding_time').value = theTotal - theNewHT - theNewCT;
+    }
+})
 
+$("#id_endTimeField").change(function() {
+    // user changed the return time; reset to 'open' status
+    // first, parse the end time to a date
+    var theNewET = new Date(document.getElementById('id_endTimeField').value);
+    //console.log('the new returned time is: ', theNewET);
+    theTotal = getTotalMinutes();
+    document.getElementById('id_totalTimeField').value = theTotal;
+    document.getElementById('id_handling_time').value = theTotal;
+    document.getElementById('id_crate_time').value = '';
+    document.getElementById('id_crate_time').enabled = false;
+    document.getElementById('id_holding_time').value = '';
+    document.getElementById('id_holding_time').enabled = false;
 })
 
 </script>
