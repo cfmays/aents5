@@ -24,6 +24,12 @@ class ampmDateTimeInput(DateTimeInput):
             # We didn't find a format that works, pass back the original
             value = orig_value
         return value
+
+class ampmDateTimeInput2(DateTimeInput):
+    def value_from_datadict(self, data, files, name):
+        # since I don't use the value of that field at all, just return something that will validagte
+        value = datetime.datetime.now()
+        return value
         
 class Open_Encounter_Form(ModelForm):
     numPerDayField = CharField(label='Today\'s uses',disabled=True,required=False)
@@ -42,7 +48,7 @@ class Open_Encounter_Form(ModelForm):
 class encounter_update_form(ModelForm):
     endTimeField = DateTimeField(label='Time returned', 
         initial=datetime.datetime.now(), 
-        widget=ampmDateTimeInput(format='%m/%d%Y  %I:%M %p', attrs={'size':'24','tabindex':50}),
+        widget=ampmDateTimeInput2(format='%m/%d%Y  %I:%M %p', attrs={'size':'24','tabindex':50}),
         required= False)
     totalTimeField = IntegerField(label='Total Minutes', 
         widget=TextInput(attrs={'min':0,'max': '1000000','type': 'number','tabindex':51}), 
