@@ -20,6 +20,7 @@
           <li><a href="{% url 'my-encounters' %}">My Encounters</a></li>
           <li><a href="{% url 'todays-encounters' %}">Today's Encounters</a></li>
            <li><a href="{% url 'all-encounters' %}">All Encounters</a></li>
+           <li><a href="{% url 'animal-types' %}">Animals</a></li>
           {% if user.is_authenticated %}
           <li><a href="{% url 'logout' %}">Log Out</a></li>
           {% else %}

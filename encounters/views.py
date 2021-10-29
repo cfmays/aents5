@@ -94,27 +94,24 @@ class EncounterDetailView(UpdateView):
     template_name = 'encounters/encounter_update_form.html'
     extra_field = 'totalminutes'
 
-    # cfm: the following was deprecated by front end script
-    # def get_form_kwargs(self):
-    #     theKwargs =  super().get_form_kwargs()
-    #     theEncounter = self.get_object()
-        
-    #     if theEncounter.handling_time == None and theEncounter.crate_time == None and theEncounter.holding_time == None:
-    #         # no times entered yet; calculate open time and put that into ht field
-    #         theOpenTime =  datetime.datetime.now() - theEncounter.encounter_date
-    #         theOpenTime = theOpenTime.seconds // 60
-    #         theKwargs['initial'] = {'handling_time': theOpenTime}
-    #     return theKwargs
-
     def get_success_url(self):
         return reverse('my-encounters')
 
-class AnimalTypesListView(generic.ListView):
+# class AnimalTypesListView(generic.ListView):
+#     model = Animal_Type
+#     template_name = 'encounters/animal_types_list.html'
+
+#     def get_queryset(self):
+#         return Animal_Type.objects.order_by('animal_type')
+
+class AnimalTypes(generic.ListView):
     model = Animal_Type
-    template_name = 'encounters/animal_types_list.html'
+    template_name = 'encounters/animal_types.html'
 
     def get_queryset(self):
-        return Animal_Type.objects.order_by('animal_type')
+        print (Animal_Type.objects.all().order_by('animal_type'))
+        return Animal_Type.objects.all().order_by('animal_type')
+
 
     
 def load_animal_uses(request):

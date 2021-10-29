@@ -1,0 +1,21 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Animal Types</h1>
+  <p>animal_types.html</p>
+  <script>
+  console.log('list:', animal_type_list)
+  </script>
+  {% if animal_type_list %}
+  <ul>
+    {% for ani in animal_type_list %}
+      <li>
+        {{ ani.animal_type }}
+      </li>
+    {% endfor %}
+</div> 
+  </ul>
+  {% else %}
+    <p>There are no animal types to display.</p>
+  {% endif %}
+{% endblock %}
