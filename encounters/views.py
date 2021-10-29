@@ -80,13 +80,7 @@ class TodaysEncountersListView(generic.ListView):
 
         return Encounter.objects.filter(encounter_date__gt = today).order_by('-encounter_date')
 
-class AnimalTypeDetailView(generic.ListView):
-    model = Animal
-    fields = ['Name', 'Max_Daily','Comments']
-    template_name_suffix = '_list_form'
 
-    def get_success_url(self):
-        return reverse('animaltypes')    
 
 class EncounterDetailView(UpdateView):
     model = Encounter
@@ -97,13 +91,6 @@ class EncounterDetailView(UpdateView):
     def get_success_url(self):
         return reverse('my-encounters')
 
-# class AnimalTypesListView(generic.ListView):
-#     model = Animal_Type
-#     template_name = 'encounters/animal_types_list.html'
-
-#     def get_queryset(self):
-#         return Animal_Type.objects.order_by('animal_type')
-
 class AnimalTypes(generic.ListView):
     model = Animal_Type
     template_name = 'encounters/animal_types.html'
@@ -111,6 +98,14 @@ class AnimalTypes(generic.ListView):
     def get_queryset(self):
         print (Animal_Type.objects.all().order_by('animal_type'))
         return Animal_Type.objects.all().order_by('animal_type')
+
+class AnimalTypesDetailView(generic.ListView):
+    model = Animal
+    fields = ['Name', 'Max_Daily','Comments']
+    template_name_suffix = '_list_form'
+
+    def get_success_url(self):
+        return reverse('animaltypes')    
 
 
     

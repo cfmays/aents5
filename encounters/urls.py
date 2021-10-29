@@ -14,5 +14,6 @@ urlpatterns = [
     path('export/', views.export_data_view, name = 'export'),
     path('api/load_animal_uses/', views.load_animal_uses, name='animal-data-API'),
     path('animals/', views.AnimalTypes.as_view(), name='animal-types'),
+    path('animallist/<str:animal_type>',views.AnimalTypesDetailView.as_view(), name = 'animallist'),
     
 ]

@@ -1,0 +1,20 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Animals</h1>
+    {% comment %} <h3>User: {{ user.username }}</h3> {% endcomment %}
+    <p>animal_list_form.html</p>
+    {% if animal_list %}
+    <ul>
+      {% for ani in animal_list %}
+        <li>
+          <p>{{ ani.Name }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+      <p>There are no encounters for this user.</p>
+    {% endif %}
+{% endblock %}
+
+  
