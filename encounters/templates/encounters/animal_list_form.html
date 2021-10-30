@@ -8,13 +8,12 @@
     <ul>
       {% for ani in animal_list %}
         <li>
-          <p>{{ ani.Name }}</p>
           <a href="{% url 'encounters-by-animal' ani.pk %}"> {{ ani.Name }} </a>
         </li>
       {% endfor %}
     </ul>
     {% else %}
-      <p>There are no encounters for this user.</p>
+      <p>There are no animals for this type.</p>
     {% endif %}
 {% endblock %}
 
