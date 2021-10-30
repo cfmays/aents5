@@ -27,7 +27,9 @@ class ampmDateTimeInput(DateTimeInput):
 
 class ampmDateTimeInput2(DateTimeInput):
     def value_from_datadict(self, data, files, name):
-        # since I don't use the value of that field at all, just return something that will validagte
+        orig_value = super(ampmDateTimeInput2, self).value_from_datadict(data, files, name)
+        print (orig_value)
+        # since I don't use the value of that field at all, just return something that will validate
         value = datetime.datetime.now()
         return value
         

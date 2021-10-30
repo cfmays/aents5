@@ -1,4 +1,3 @@
-#cfm created
 from os import name
 from django.urls import path
 from . import views
@@ -15,5 +14,6 @@ urlpatterns = [
     path('api/load_animal_uses/', views.load_animal_uses, name='animal-data-API'),
     path('animals/', views.AnimalTypes.as_view(), name='animal-types'),
     path('animallist/<str:animal_type>',views.AnimalTypesDetailView.as_view(), name = 'animallist'),
+    path('encountersByAnimal/<str:pk>', views.EncountersByAnimalListView.as_view(), name= 'encounters-by-animal'),
     
 ]

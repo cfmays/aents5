@@ -24,7 +24,7 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('AentsAdmin/', admin.site.urls),
     #cfm added
     path('encounters/', include('encounters.urls')),
     path('', RedirectView.as_view(url='encounters/', permanent=True)),

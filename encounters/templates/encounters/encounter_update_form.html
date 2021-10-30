@@ -24,8 +24,9 @@ function ampmFormat(theDate) {
     } else {
         theSuffix = 'AM';
     }
+    var theMinuteStr;
     if (lclDate.getMinutes().toString().length < 2) {
-        var theMinuteStr = '0' + lclDate.getMinutes();
+        theMinuteStr = '0' + lclDate.getMinutes();
     } else {
         theMinuteStr = lclDate.getMinutes();
     }    

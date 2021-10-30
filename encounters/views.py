@@ -96,7 +96,7 @@ class AnimalTypes(generic.ListView):
     template_name = 'encounters/animal_types.html'
 
     def get_queryset(self):
-        print (Animal_Type.objects.all().order_by('animal_type'))
+        #print (Animal_Type.objects.all().order_by('animal_type'))
         return Animal_Type.objects.all().order_by('animal_type')
 
 class AnimalTypesDetailView(generic.ListView):
@@ -104,11 +104,27 @@ class AnimalTypesDetailView(generic.ListView):
     fields = ['Name', 'Max_Daily','Comments']
     template_name_suffix = '_list_form'
 
+    def get_queryset(self, pk):
+        qs = super().get_queryset().order_by('Name')
+        qs = qs.filter(Animal_Type=pk)
+        return qs
+
     def get_success_url(self):
         return reverse('animaltypes')    
 
+class EncountersByAnimalListView(generic.ListView):
+    model = Encounter
+    fields = ['encounter_date','user','handling_time','crate_time','holding_time','comments']
+    template_name = 'encounters/encouters_list_by_animal.html'
 
-    
+    def get_success_url(self):
+        return reverse('animals')    
+
+    def __init__(self, **kwargs):
+        print('cfm in EncountersByAnimalListView __init__')
+        super().__init__(**kwargs)
+
+
 def load_animal_uses(request):
     # print('in function load_animal_uses()')
     animal_id = request.GET.get('animal')
