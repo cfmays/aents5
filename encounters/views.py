@@ -99,14 +99,21 @@ class AnimalTypes(generic.ListView):
         #print (Animal_Type.objects.all().order_by('animal_type'))
         return Animal_Type.objects.all().order_by('animal_type')
 
+def AnimalTypesDetailList(request, pk):
+
+# look at index function for ideas
+
+    return render(request, '.html', context = 'context')
+
 class AnimalTypesDetailView(generic.ListView):
     model = Animal
     fields = ['Name', 'Max_Daily','Comments']
     template_name_suffix = '_list_form'
 
-    def get_queryset(self, pk):
-        qs = super().get_queryset().order_by('Name')
-        qs = qs.filter(Animal_Type=pk)
+    def get_queryset(self):
+        #print(self.kwargs)
+        theAnimalType = self.kwargs['animal_type']
+        qs = super().get_queryset().filter(Animal_Type=theAnimalType).order_by('Name')
         return qs
 
     def get_success_url(self):
@@ -120,10 +127,12 @@ class EncountersByAnimalListView(generic.ListView):
     def get_success_url(self):
         return reverse('animals')    
 
-    def __init__(self, **kwargs):
-        print('cfm in EncountersByAnimalListView __init__')
-        super().__init__(**kwargs)
-
+    def get_queryset(self):
+        print(self.kwargs)
+        thePK = self.kwargs['pk']
+        qs = Encounter.objects.all().filter(animal=thePK).order_by('-encounter_date')
+        return qs 
+    
 
 def load_animal_uses(request):
     # print('in function load_animal_uses()')
