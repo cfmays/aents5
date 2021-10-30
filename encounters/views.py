@@ -119,20 +119,33 @@ class AnimalTypesDetailView(generic.ListView):
     def get_success_url(self):
         return reverse('animaltypes')    
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['theAnimalType'] = self.kwargs['animal_type']
+        return context
+
 class EncountersByAnimalListView(generic.ListView):
     model = Encounter
     fields = ['encounter_date','user','handling_time','crate_time','holding_time','comments']
-    template_name = 'encounters/encouters_list_by_animal.html'
+    template_name_suffix = '_by_animal'
 
     def get_success_url(self):
         return reverse('animals')    
 
     def get_queryset(self):
-        print(self.kwargs)
+        #print(self.kwargs)
         thePK = self.kwargs['pk']
         qs = Encounter.objects.all().filter(animal=thePK).order_by('-encounter_date')
         return qs 
-    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        thePK = self.kwargs['pk']
+        print('the pk is:', thePK)
+        anAnimal = Animal.objects.filter(pk=thePK).first()
+        print ('anAnimal:', anAnimal)
+        context['typeAndAnimal'] = anAnimal
+        return context
 
 def load_animal_uses(request):
     # print('in function load_animal_uses()')
