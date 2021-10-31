@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>Update Encounter</h1>
-    <p>encounter_update_form.html</p>
+    {% comment %} <p>encounter_update_form.html</p> {% endcomment %}
         <form method="post">{% csrf_token %}
             
             {{form.as_p}}

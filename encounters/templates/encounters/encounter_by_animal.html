@@ -3,7 +3,7 @@
 {% block content %}
   <h1>Encounters by Animal </h1>
   <h3>{{ typeAndAnimal }}</h3>
-  <p>encounter_by_animal.html</p>
+  {% comment %} <p>encounter_by_animal.html</p> {% endcomment %}
   {% if encounter_list %}
   <ul>
       {% for enc in encounter_list %}

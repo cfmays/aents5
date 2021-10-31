@@ -177,13 +177,4 @@ def export_data_view(request):
     for enc in qs:
         aRow = [enc.encounter_date, enc.animal, enc.user, enc.handling_time, enc.crate_time, enc.holding_time, enc.comments]
         writer.writerow(aRow)
-
     return response
-
-    # encounter_date = models.DateTimeField()
-    # animal = models.ForeignKey(Animal, null=True, on_delete=models.SET_NULL)
-    # user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL,verbose_name='Handler')
-    # handling_time = models.BigIntegerField(blank=True, null=True)
-    # crate_time = models.BigIntegerField(blank=True, null=True)
-    # holding_time = models.BigIntegerField(blank=True, null=True)
-    # comments = models.TextField(blank=True, null=True)

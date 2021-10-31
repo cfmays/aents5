@@ -3,7 +3,7 @@
 {% block content %}
 <form method = 'post' id = 'encounterform' data-animal-uses-url="{% url 'ajax_load_animal_uses' %}" novalidate>
     {% csrf_token %}
-    <p>encounter_form.html</p>
+    {% comment %} <p>encounter_form.html</p> {% endcomment %}
     {{ form.as_p }}
     <input type="submit" value="Submit">
 </form>

@@ -18,7 +18,7 @@ class Animal_Type(SafeDeleteModel):
 
 class Animal(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE
-    Name = models.CharField(max_length=64, unique=True)
+    Name = models.CharField(max_length=64)
     Max_Daily = models.IntegerField(default=4)
     Inactive_Date = models.DateField(null=True, blank=True)
     Animal_Type = models.ForeignKey(Animal_Type, null=True, on_delete=models.SET_NULL, default=None)
