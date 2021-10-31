@@ -4,6 +4,7 @@ from django.forms.widgets import DateTimeInput
 from django.utils import timezone, formats
 from encounters.models import Animal, Encounter
 from django.views.generic.edit import UpdateView
+from django.contrib.auth.models import User
 
 import datetime
 
@@ -47,6 +48,11 @@ class Open_Encounter_Form(ModelForm):
             'encounter_date': ampmDateTimeInput(format='%m/%d/%Y  %I:%M %p', attrs={'size': '24'}),
         }
 
+    def __init__(self, *args, **kwargs):
+        super(Open_Encounter_Form, self).__init__(*args, **kwargs)   
+        self.fields['user'].queryset = User.objects.order_by('username')
+        #print (User.objects)
+
 class encounter_update_form(ModelForm):
     endTimeField = DateTimeField(label='Time returned', 
         initial=datetime.datetime.now(), 
@@ -67,4 +73,8 @@ class encounter_update_form(ModelForm):
             'comments': Textarea(attrs={'rows': 4, 'cols': 40}),
             'encounter_date': ampmDateTimeInput(format='%m/%d/%Y  %I:%M %p', attrs={'size':'24'}),
         }
-
+    
+    def __init__(self, *args, **kwargs):
+        super(encounter_update_form, self).__init__(*args, **kwargs)   
+        self.fields['user'].queryset = User.objects.order_by('username')
+        #print (User.objects)
