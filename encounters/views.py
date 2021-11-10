@@ -13,7 +13,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import generic
 from django.shortcuts import redirect
 from django.conf import settings
-from django.contrib.auth import logout
+from django.contrib.auth import logout, login
 from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import UpdateView
 from django.http import HttpResponse
@@ -163,6 +163,11 @@ def load_animal_uses(request):
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse('my-encounters'))
+    
+# def login_view(request):
+#     #template_name 
+#     login(request)
+#     return HttpResponseRedirect(reverse('todays-encounters'))
 
 def export_data_view(request):
     # Create the HttpResponse object with the appropriate CSV header.

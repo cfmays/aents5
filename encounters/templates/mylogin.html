@@ -1,0 +1,15 @@
+{% extends "base_generic.html" %}
+
+
+{% block title %}My Login{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <h2>Login</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Logi In</button>
+  </form>
+</div>
+{% endblock %}

@@ -15,6 +15,7 @@ urlpatterns = [
     path('encounter/<int:pk>', views.EncounterDetailView.as_view(), name = 'encounter-detail'),
     path('todaysencounters/', views.TodaysEncountersListView.as_view(), name='todays-encounters'),
     path('logout/', views.logout_view, name='logout'),
+    #path('login/', views.login_view, name='login'),
     path('export/', views.export_data_view, name = 'export'),
     path('api/load_animal_uses/', views.load_animal_uses, name='animal-data-API'),
     path('animals/', views.AnimalTypes.as_view(), name='animal-types'),
