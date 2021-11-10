@@ -5,6 +5,8 @@ from django.utils import timezone, formats
 from encounters.models import Animal, Encounter
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import AuthenticationForm
+from django import forms
 
 import datetime
 
@@ -78,3 +80,8 @@ class encounter_update_form(ModelForm):
         super(encounter_update_form, self).__init__(*args, **kwargs)   
         self.fields['user'].queryset = User.objects.order_by('username')
         #print (User.objects)
+
+class UserLoginForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super(UserLoginForm, self).__init__(*args, **kwargs)
+
