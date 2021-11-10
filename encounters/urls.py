@@ -1,8 +1,5 @@
 from os import name
-from django.contrib.auth.forms import AuthenticationForm
 from django.urls import path
-
-from aents5.encounters.forms import UserLoginForm
 from . import views
 from django.contrib import admin
 
@@ -23,7 +20,5 @@ urlpatterns = [
     path('animals/', views.AnimalTypes.as_view(), name='animal-types'),
     path('animallist/<str:animal_type>',views.AnimalTypesDetailView.as_view(), name = 'animallist'),
     path('encountersByAnimal/<str:pk>', views.EncountersByAnimalListView.as_view(), name= 'encounters-by-animal'),
-    path('login/', views.LoginView.as_view(
-        template_name="login.html",
-        authentication_form=UserLoginForm),name='login'),
+    
 ]
