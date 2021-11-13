@@ -1,11 +1,11 @@
 from django.db.models.fields import CharField, IntegerField, TextField
-from django.forms import ModelForm, Textarea, IntegerField, CharField, DateTimeField, TextInput
+from django.forms import ModelForm, Textarea, IntegerField, CharField, DateTimeField, TextInput, Form
 from django.forms.widgets import DateTimeInput
 from django.utils import timezone, formats
 from encounters.models import Animal, Encounter
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.models import User
-
+from django import forms
 import datetime
 
 class ampmDateTimeInput(DateTimeInput):
@@ -78,3 +78,8 @@ class encounter_update_form(ModelForm):
         super(encounter_update_form, self).__init__(*args, **kwargs)   
         self.fields['user'].queryset = User.objects.order_by('username')
         #print (User.objects)
+
+class export_options_form(Form):
+    startDate = forms.DateField(label="Starting Date", required=False)
+    endDate = forms.DateField(label='Ending Date', required=False)
+    #animalType = forms.forms.ChoiceField('Animal Type', choices=[Animal_Type], required=False)

@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.views import generic
 from django import forms
 from django.http import HttpResponseRedirect
-from .forms import Open_Encounter_Form, ampmDateTimeInput, encounter_update_form
+from .forms import Open_Encounter_Form, encounter_update_form, export_options_form
 from django.urls import reverse
 import datetime
 from datetime import date, timedelta
@@ -15,7 +15,7 @@ from django.shortcuts import redirect
 from django.conf import settings
 from django.contrib.auth import logout, login
 from django.contrib.auth.decorators import login_required
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import UpdateView, FormView
 from django.http import HttpResponse
 from django.http import JsonResponse
 import csv
@@ -183,3 +183,11 @@ def export_data_view(request):
         aRow = [enc.encounter_date, enc.animal, enc.user, enc.handling_time, enc.crate_time, enc.holding_time, enc.comments]
         writer.writerow(aRow)
     return response
+
+class ExportView(FormView):
+
+    template_name='encounters/exportform.html'
+    form_class = export_options_form
+    fields = ['start_date','end_date']
+    
+    
