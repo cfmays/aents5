@@ -141,9 +141,9 @@ class EncountersByAnimalListView(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         thePK = self.kwargs['pk']
-        print('the pk is:', thePK)
+        #print('the pk is:', thePK)
         anAnimal = Animal.objects.filter(pk=thePK).first()
-        print ('anAnimal:', anAnimal)
+        #print ('anAnimal:', anAnimal)
         context['typeAndAnimal'] = anAnimal
         return context
 
@@ -153,11 +153,8 @@ def load_animal_uses(request):
     uses = Encounter.objects.filter(animal=animal_id, encounter_date__gte = datetime.datetime.now().date()).count()
     theMax = Animal.objects.filter(id = animal_id).values('Max_Daily')[0]['Max_Daily']
     #print (theMax)
-    #uses = str(uses) + ' ( max: ' + str(theMax) + ' )'
-    #cfm refine this to send both integets so that html can print in red if overused
     data = {'uses': uses, 'theMax': theMax}
     return JsonResponse(data)
-    # return render(request, 'animal_uses_value.html', {'numPerDayField': uses})
 
 
 def logout_view(request):
@@ -184,10 +181,39 @@ def export_data_view(request):
         writer.writerow(aRow)
     return response
 
-class ExportView(FormView):
 
-    template_name='encounters/exportform.html'
-    form_class = export_options_form
-    fields = ['start_date','end_date']
+def export_data(request):
+        print('in export_data function')
+        if request.method == 'POST':
+            form = export_options_form(request.POST)
+            if form.is_valid():
+                return HttpResponseRedirect('index')
+        else:
+            print ('creating form')
+            form = export_options_form()
+            print (form)
+        return render (request, 'encounters/exportform.html', {'form':form})
+
+
+    
+# class ExportView(FormView):
+
+#     template_name='encounters/exportform.html'
+#     form_class = export_options_form
+#     fields = ['start_date','end_date']
+
+#     def export_data(request):
+#         print('in export_data function')
+#         if request.method == 'POST':
+#             form = export_options_form(request.POST)
+#             if form.is_valid():
+#                 return HttpResponseRedirect('home')
+#         else:
+#             form = export_options_form()
+#         return render (request, 'exportform.html', {'form':form})
+
+#     def __init__(self, **kwargs):
+#         super().__init__(**kwargs)
+#         #print ('in exportview.__init__')
     
     
