@@ -22,6 +22,7 @@
           <li><a href="{% url 'todays-encounters' %}">Today's Encounters</a></li>
            <li><a href="{% url 'all-encounters' %}">All Encounters</a></li>
            <li><a href="{% url 'animal-types' %}">Animals</a></li>
+           <li><a href="{% url 'export-options' %}">Export Data</a></li>
           {% if user.is_authenticated %}
           <li><a href="{% url 'logout' %}">Log Out</a></li>
           {% else %}
@@ -30,7 +31,7 @@
           {% if user.is_staff %}
           <li><a href="{% url 'admin:index' %}">Admin panel</a></li>
           {% comment %} <li><a href="{% url 'export' %}">Export Data</a></li> {% endcomment %}
-          <li><a href="{% url 'export-options' %}">Export Data</a></li>
+          
           {% endif %}
         </ul>
      {% endblock %}
