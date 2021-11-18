@@ -205,7 +205,7 @@ def export_data(request):
                 elif form.cleaned_data['animalType'] is not None:
                     print('animaltype is ')
                     print(form.cleaned_data['animalType'])
-                    qs = qs.filter(animal__animal_type__animal_type = form.cleaned_data['animalType'])
+                    qs = qs.filter(animal__Animal_Type__animal_type = form.cleaned_data['animalType'])
                     print(qs)
                 if form.cleaned_data['users'] is not None:
                     qs = qs.filter(user=form.cleaned_data['users'])
