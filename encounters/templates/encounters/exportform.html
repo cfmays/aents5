@@ -2,10 +2,10 @@
 
 {% block content %}
 
-<p>exportform.html</p>
+{% comment %} <p>exportform.html</p> {% endcomment %}
 <form action="{% url 'export-options' %}" method="post">
     {% csrf_token %}
-    <h1> Export Options</h1>
+    <h1> Choose Export Options</h1>
     {{ form.as_p }}
     <input type="submit" value="Submit">
 
