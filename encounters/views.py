@@ -210,9 +210,21 @@ def export_data(request):
                 if form.cleaned_data['users'] is not None:
                     qs = qs.filter(user=form.cleaned_data['users'])
                     print(qs)
+                # now I have the appropriate qs; download
+
+                response = HttpResponse(
+                    content_type='text/csv',
+                    headers={'Content-Disposition': 'attachment; filename="EncountersData.csv"'},
+                )
+
+                writer = csv.writer(response)
+                writer.writerow(['Date/Time', 'Animal', 'User', 'Handling Time', 'Crate Time', 'Holding time', 'Comments'])
+                for enc in qs:
+                    aRow = [enc.encounter_date, enc.animal, enc.user, enc.handling_time, enc.crate_time, enc.holding_time, enc.comments]
+                    writer.writerow(aRow)
+                return response
 
 
-                return HttpResponseRedirect('index')
         else:
             form = export_options_form()
         return render (request, 'encounters/exportform.html', {'form':form})
