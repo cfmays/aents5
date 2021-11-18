@@ -21,5 +21,7 @@ urlpatterns = [
     path('animals/', views.AnimalTypes.as_view(), name='animal-types'),
     path('animallist/<str:animal_type>',views.AnimalTypesDetailView.as_view(), name = 'animallist'),
     path('encountersByAnimal/<str:pk>', views.EncountersByAnimalListView.as_view(), name= 'encounters-by-animal'),
+    path('export_options/', views.export_data, name='export-options'),
+    path('ajax/load-animals/', views.load_animals, name='ajax_load_animals'),
     
 ]
