@@ -3,12 +3,36 @@
 {% block content %}
 
 <p>exportform.html</p>
-console.log ('in exportform.html')
 <form action="{% url 'export-options' %}" method="post">
     {% csrf_token %}
     <h1> Export Options</h1>
     {{ form.as_p }}
     <input type="submit" value="Submit">
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script>
+    $("#id_animalType").change(function () {
+      //console.log('animal type changed');
+      url = "{% url 'ajax_load_animals' %}"
+      //var url = $("#exportform").attr("ajax_load_animals");  // get the url of the `load_cities` view
+      //console.log('the url:' + url);
+      var theAnimalTypeID = $(this).val();  // get the selected country ID from the HTML input
+      //console.log('animal type id: ' + theAnimalTypeID);
+
+      $.ajax({                       // initialize an AJAX request
+        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+        data: {
+          'theAnimalTypeID': theAnimalTypeID       // add the country id to the GET parameters
+        },
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+        //console.log('data returned: ' + data);
+          $("#id_animals").html(data);  // replace the contents of the city input with the data that came from the server
+        }
+      });
+
+    });
+  </script>
 </form>
 
 {% endblock %}

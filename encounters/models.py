@@ -45,7 +45,15 @@ class Encounter(SafeDeleteModel):
     comments = models.TextField(blank=True, null=True)
 
     def __str__(self) -> str:
-        return (self.user.username + '/' + self.animal.Name)
+        if self.user is None:
+            aStr = 'Unknown' + '/'
+        else:
+             aStr = self.user.username + '/'
+        if self. animal is None:
+            aStr += 'Unknown'
+        else:
+            aStr += self.animal.Name
+        return (aStr)
     
     def get_absolute_url(self):
         return reverse("encounter-detail", kwargs={"pk": self.pk})
