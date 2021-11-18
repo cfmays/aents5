@@ -29,8 +29,8 @@
           {% endif %}
           {% if user.is_staff %}
           <li><a href="{% url 'admin:index' %}">Admin panel</a></li>
-          <li><a href="{% url 'export' %}">Export Data</a></li>
-          <li><a href="{% url 'export-options' %}">Export Options</a></li>
+          {% comment %} <li><a href="{% url 'export' %}">Export Data</a></li> {% endcomment %}
+          <li><a href="{% url 'export-options' %}">Export Data</a></li>
           {% endif %}
         </ul>
      {% endblock %}
