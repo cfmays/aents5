@@ -18,6 +18,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import UpdateView, FormView
 from django.http import HttpResponse
 from django.http import JsonResponse
+from django.contrib import messages
 import csv
 
 def index(request):
@@ -46,6 +47,7 @@ def open_encounter(request):
         if form.is_valid():
             #save the data
             aRecord=form.save()
+            messages.success(request, 'Encounter saved.')
             return HttpResponseRedirect(reverse('index'))
         
     else:
