@@ -40,11 +40,11 @@ function ampmFormat(theDate) {
 }
 
 function getTotalMinutes() {
-    console.log('in getTotalMinutes');
+    //console.log('in getTotalMinutes');
     var theEndTime = new Date(document.getElementById('id_endTimeField').value);
     var theStartTime = new Date(document.getElementById('id_encounter_date').value);
     var theMinutes = Math.round((theEndTime - theStartTime)/60000);
-    console.log('calculated: ', theMinutes);
+    //console.log('calculated: ', theMinutes);
     return theMinutes;
 }
 
@@ -61,13 +61,13 @@ $(document).ready(function(){
     // first, if any minutes are already there, use those
     if ((document.getElementById('id_handling_time').value > 0 )  || (document.getElementById('id_crate_time').value > 0 )|| (document.getElementById('id_holding_time').value > 0 )) {
         // some minutes are there; add them up
-        console.log('handling:', document.getElementById('id_holding_time').value);
-        console.log('found minutes::',document.getElementById('id_handling_time').value,'/',document.getElementById('id_crate_time').value,'/',document.getElementById('id_holding_time').value)
+        //console.log('handling:', document.getElementById('id_holding_time').value);
+        //console.log('found minutes::',document.getElementById('id_handling_time').value,'/',document.getElementById('id_crate_time').value,'/',document.getElementById('id_holding_time').value)
         var theMinutes = Number(document.getElementById('id_handling_time').value) +
             Number(document.getElementById('id_crate_time').value) +
             Number(document.getElementById('id_holding_time').value);
         // and caclulate the time returned
-        console.log('theMinutes: ', theMinutes);
+        //console.log('theMinutes: ', theMinutes);
         var theEndTime = new Date(theStartTime.getTime() + theMinutes * 60000);
     } else {
         // no minutes there yet; use the current time to calc
@@ -85,10 +85,10 @@ $(document).ready(function(){
     document.getElementById('id_totalTimeField').value = theMinutes;
 
     // format the date
-    console.log('end time bewfore formatting:', theEndTime);
+    //console.log('end time bewfore formatting:', theEndTime);
     var theDateStr = ampmFormat(theEndTime);
     document.getElementById('id_endTimeField').value = theDateStr;
-    console.log('after formatting:', theDateStr);
+    //console.log('after formatting:', theDateStr);
 });
 
 $("#id_handling_time").change(function () {
@@ -118,7 +118,7 @@ $("#id_endTimeField").change(function() {
     // first, parse the end time to a date
     var theNewET = new Date(document.getElementById('id_endTimeField').value);
 
-    console.log('the new returned time is: ', theNewET);
+    //console.log('the new returned time is: ', theNewET);
     theTotal = getTotalMinutes();
     document.getElementById('id_totalTimeField').value = theTotal;
     document.getElementById('id_handling_time').value = theTotal;

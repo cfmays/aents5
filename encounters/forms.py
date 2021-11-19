@@ -84,4 +84,4 @@ class export_options_form(Form):
     endDate = forms.DateField(label='Ending Date', required=False)
     animalType = forms.ModelChoiceField(label='Animal Type', queryset=Animal_Type.objects.all(), required=False)
     animals = forms.ModelChoiceField(label='Single Animal', queryset=Animal.objects.all(), required=False)
-    users = forms.ModelChoiceField(label='Handler', queryset=User.objects.all(), required=False)
+    users = forms.ModelChoiceField(label='Handler', queryset=User.objects.order_by('username'), required=False)

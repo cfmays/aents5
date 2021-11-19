@@ -70,7 +70,7 @@ class AllEncountersListView(generic.ListView):
     template_name = 'encounters/encounters_list_all.html'
 
     def get_queryset(self):
-        print('in allEncounterListView, templatename: ' + self.template_name) #to prove the correct view is being called
+        #print('in allEncounterListView, templatename: ' + self.template_name) #to prove the correct view is being called
         return Encounter.objects.all().order_by('-encounter_date')
 
 class TodaysEncountersListView(generic.ListView):
@@ -152,7 +152,7 @@ class EncountersByAnimalListView(generic.ListView):
         return context
 
 def load_animal_uses(request):
-    # print('in function load_animal_uses()')
+    # #print('in function load_animal_uses()')
     animal_id = request.GET.get('animal')
     uses = Encounter.objects.filter(animal=animal_id, encounter_date__gte = datetime.datetime.now().date()).count()
     theMax = Animal.objects.filter(id = animal_id).values('Max_Daily')[0]['Max_Daily']
@@ -193,27 +193,27 @@ def export_data(request):
                 #print (form.cleaned_data)
                 if form.cleaned_data['startDate'] is not None:
                     # start here and do the rest
-                    print('starting qs with startdate:')
+                    #print('starting qs with startdate:')
                     qs = Encounter.objects.filter(encounter_date__gte=form.cleaned_data['startDate'])
-                    print(qs)
+                    #print(qs)
                 else:
-                    print('starting qs without startdate:')
+                    #print('starting qs without startdate:')
                     qs = Encounter.objects.all()
-                    print(qs)
+                    #print(qs)
                 if form.cleaned_data['endDate'] is not None:
                     qs = qs.filter(encounter_date__lte=form.cleaned_data['endDate'])
-                    print (qs)
+                    #print (qs)
                 if form.cleaned_data['animals'] is not None:
                     qs = qs.filter(animal = form.cleaned_data['animals'])
-                    print (qs)
+                    #print (qs)
                 elif form.cleaned_data['animalType'] is not None:
-                    print('animaltype is ')
-                    print(form.cleaned_data['animalType'])
+                    #print('animaltype is ')
+                    #print(form.cleaned_data['animalType'])
                     qs = qs.filter(animal__Animal_Type__animal_type = form.cleaned_data['animalType'])
-                    print(qs)
+                    #print(qs)
                 if form.cleaned_data['users'] is not None:
                     qs = qs.filter(user=form.cleaned_data['users'])
-                    print(qs)
+                    #print(qs)
                 # now I have the appropriate qs; download
 
                 response = HttpResponse(

@@ -59,7 +59,7 @@ class Encounter(SafeDeleteModel):
         return reverse("encounter-detail", kwargs={"pk": self.pk})
 
     def get_total_minutes(self):
-        print ('self: ', self)
+        #print ('self: ', self)
         if (self.handling_time < 1 and self.crate_time < 1 and self.holding_time < 1):
             theMinutes =  datetime.datetime.now() - self.encounter_date
             theMinutes = theMinutes.seconds // 60
@@ -71,7 +71,7 @@ class Encounter(SafeDeleteModel):
                 theMinutes += self.crate_time
             if (self.holding_time is not None):
                 theMinutes += self.holding_time
-        print ('returning theMinutes:', theMinutes)
+        #print ('returning theMinutes:', theMinutes)
         return theMinutes
 
 
