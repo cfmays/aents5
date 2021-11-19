@@ -19,6 +19,7 @@ from django.views.generic.edit import UpdateView, FormView
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 import csv
 
 def index(request):
@@ -84,11 +85,12 @@ class TodaysEncountersListView(generic.ListView):
 
 
 
-class EncounterDetailView(UpdateView):
+class EncounterDetailView(SuccessMessageMixin, UpdateView):
     model = Encounter
     form_class = encounter_update_form
     template_name = 'encounters/encounter_update_form.html'
     extra_field = 'totalminutes'
+    success_message = 'Encounter updated'
 
     def get_success_url(self):
         return reverse('my-encounters')
