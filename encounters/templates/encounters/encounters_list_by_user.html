@@ -10,9 +10,9 @@
       {% for enc in encounter_list %}
       <li>
       {% if enc.handling_time == null and enc.crate_time == null  and enc.handling_time == null %}
-        <a href="{% url 'encounter-detail' enc.pk %}" style="color:Red">{{enc.encounter_date}} -- {{ enc.animal }} </a>
+        <a href="{% url 'encounter-detail' enc.pk %}">{{enc.encounter_date}} -- {{ enc.animal }} <span class="badge badge-success">Open</span></a>
       {% else %}
-        <a href="{% url 'encounter-detail' enc.pk %}" style="color:black">{{enc.encounter_date}} -- {{ enc.animal }} </a>
+        <a href="{% url 'encounter-detail' enc.pk %}" style="color:black">{{enc.encounter_date}} -- {{ enc.animal }} &#x2611;&#xFE0F;</a>
       {% endif %}
       </li>
       {% endfor %}
