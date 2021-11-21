@@ -1,49 +1,12 @@
-{% extends "base_generic.html" %}
+{% extends "base_generic.html" %} {% block content %}
+<h1>Animal Encounters</h1>
+<p>Welcome to Animal Encounters</p>
+<h2>Status</h2>
 
-{% block content %}
-  <h1>Animal Encounters</h1>
-  <p>Welcome to Animal Encounters</p>
-  <h2>Status</h2>
-
-  <p>The database has the following record counts:</p>
-  <ul>
-    <li><strong>Animals:</strong> {{ num_animals }}</li>
-    <li><strong>Users:</strong> {{ num_users }}</li>
-    <li><strong>Encounters:</strong> {{ num_encounters }}</li>
-  </ul>
-    {% if messages %}
-    <p>&nbsp&nbsp</p>
-    <style>
-    .left {
-  margin: auto;
-  width: 50%;
-  padding: 10px;
-}
-</style>
-<div class='center'>
-    {% for message in messages %}
-      <div class="message" style=color:red>
-      <h4>
-          {{ message }}
-          <a href="#" class="del-msg">&times;</a>
-          </h4>
-      </div>
-  {% endfor %}
-  </div>
-{% endif %}
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script>
-    $(document).ready(function() {
-      //console.log('in doc.ready');
-        // messages timeout for 10 sec 
-        setTimeout(function() {
-            $('.message').fadeOut('slow');
-        }, 3000); // <-- time in milliseconds, 1000 =  1 sec
-
-        // delete message
-        $('.del-msg').on('click',function(){
-            $('.del-msg').parent().attr('style', 'display:none;');
-        })
-    });
-</script>
+<p>The database has the following record counts:</p>
+<ul>
+  <li><strong>Animals:</strong> {{ num_animals }}</li>
+  <li><strong>Users:</strong> {{ num_users }}</li>
+  <li><strong>Encounters:</strong> {{ num_encounters }}</li>
+</ul>
 {% endblock %}
