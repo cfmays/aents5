@@ -31,8 +31,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Animal_Type',
             fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('deleted', models.DateTimeField(editable=False, null=True)),
-                ('animal_type', models.CharField(max_length=32, primary_key=True, serialize=False, unique=True)),
+                ('animal_type', models.CharField(max_length=32, serialize=False, unique=True)),
             ],
             options={
                 'abstract': False,
