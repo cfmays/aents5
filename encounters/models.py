@@ -11,7 +11,7 @@ from safedelete.models import SOFT_DELETE
 
 class Animal_Type(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE
-    animal_type = models.CharField(max_length=32, unique=True, primary_key=True)
+    animal_type = models.CharField(max_length=32, unique=True)
     def __str__(self) -> str:
         return (self.animal_type)
 

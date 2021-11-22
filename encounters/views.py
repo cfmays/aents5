@@ -117,7 +117,8 @@ class AnimalTypesDetailView(generic.ListView):
     def get_queryset(self):
         #print(self.kwargs)
         theAnimalType = self.kwargs['animal_type']
-        qs = super().get_queryset().filter(Animal_Type=theAnimalType).order_by('Name')
+        theAnimalType_id = Animal_Type.objects.filter(animal_type=theAnimalType)[0].id
+        qs = super().get_queryset().filter(Animal_Type=theAnimalType_id).order_by('Name')
         return qs
 
     def get_success_url(self):
