@@ -6,6 +6,7 @@
 <form action="{% url 'export-options' %}" method="post">
     {% csrf_token %}
     <h1> Choose Export Options</h1>
+    <p><br>Limit the data to be exported by filling in any or all of these fields,<br>then click Submit.  Leave all fields blank to get all data in the db.<br></p>
     {{ form.as_p }}
     <input type="submit" value="Submit">
 
