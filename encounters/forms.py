@@ -36,10 +36,11 @@ class ampmDateTimeInput2(DateTimeInput):
         
 class Open_Encounter_Form(ModelForm):
     numPerDayField = CharField(label='Today\'s uses',disabled=True,required=False)
+    animalCommentsField = CharField(label='Animal comments', max_length=360, disabled=True,required=False)
 
     class Meta:
         model = Encounter        
-        fields = ['encounter_date','animal','numPerDayField','user','handling_time','crate_time','holding_time','comments']
+        fields = ['encounter_date','animal','numPerDayField','animalCommentsField','user','handling_time','crate_time','holding_time','comments']
         widgets = {
             'handling_time': TextInput(attrs={'min':0,'max': '1000000','type': 'number'}),
             'crate_time': TextInput(attrs={'min':0,'max': '1000000','type': 'number'}),

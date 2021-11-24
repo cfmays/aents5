@@ -157,8 +157,9 @@ def load_animal_uses(request):
     animal_id = request.GET.get('animal')
     uses = Encounter.objects.filter(animal=animal_id, encounter_date__gte = datetime.datetime.now().date()).count()
     theMax = Animal.objects.filter(id = animal_id).values('Max_Daily')[0]['Max_Daily']
+    theAnimalComments = Animal.objects.filter(id = animal_id).values('Comments')[0]['Comments']
     #print (theMax)
-    data = {'uses': uses, 'theMax': theMax}
+    data = {'uses': uses, 'theMax': theMax, 'theAnimalComments': theAnimalComments}
     return JsonResponse(data)
 
 
