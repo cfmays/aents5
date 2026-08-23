@@ -24,8 +24,8 @@ class Animal(SafeDeleteModel):
     Animal_Type = models.ForeignKey(Animal_Type, null=True, on_delete=models.SET_NULL, default=None)
     Comments = models.TextField(blank=True)
     def todays_encounters(self):
-        theLimitDate = datetime.today() - timedelta(days=1)
-        aQs = Encounter_set.filter(encounter_date__gte = theLimitDate)
+        theLimitDate = datetime.datetime.today() - timedelta(days=1)
+        aQs = self.encounter_set.filter(encounter_date__gte = theLimitDate)
         return aQs.count()
     def __str__(self) -> str:
         aStr = self.Animal_Type.__str__() + ' ' + self.Name
