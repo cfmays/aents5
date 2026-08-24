@@ -37,41 +37,28 @@ class Animal(SafeDeleteModel):
 class Encounter(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE
     encounter_date = models.DateTimeField()
-    animal = models.ForeignKey(Animal, null=True, on_delete=models.SET_NULL)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL,verbose_name='Handler')
+    animal = models.ForeignKey(Animal, on_delete=models.PROTECT)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='Handler')
     handling_time = models.BigIntegerField(blank=True, null=True)
     crate_time = models.BigIntegerField(blank=True, null=True)
     holding_time = models.BigIntegerField(blank=True, null=True)
     comments = models.TextField(blank=True, null=True)
 
     def __str__(self) -> str:
-        if self.user is None:
-            aStr = 'Unknown' + '/'
-        else:
-             aStr = self.user.username + '/'
-        if self. animal is None:
-            aStr += 'Unknown'
-        else:
-            aStr += self.animal.Name
-        return (aStr)
+        return self.user.username + '/' + self.animal.Name
     
     def get_absolute_url(self):
         return reverse("encounter-detail", kwargs={"pk": self.pk})
 
     def get_total_minutes(self):
-        #print ('self: ', self)
-        if (self.handling_time < 1 and self.crate_time < 1 and self.holding_time < 1):
-            theMinutes =  datetime.datetime.now() - self.encounter_date
+        handling_time = self.handling_time or 0
+        crate_time = self.crate_time or 0
+        holding_time = self.holding_time or 0
+        if (handling_time < 1 and crate_time < 1 and holding_time < 1):
+            theMinutes = datetime.datetime.now() - self.encounter_date
             theMinutes = theMinutes.seconds // 60
         else:
-            theMinutes = 0
-            if (self.handling_time is not None):
-                theMinutes += self.handling_time
-            if (self.crate_time is not None):
-                theMinutes += self.crate_time
-            if (self.holding_time is not None):
-                theMinutes += self.holding_time
-        #print ('returning theMinutes:', theMinutes)
+            theMinutes = handling_time + crate_time + holding_time
         return theMinutes
 
 

@@ -24,12 +24,14 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('AentsAdmin/', admin.site.urls),
-    #cfm added
-    path('encounters/', include('encounters.urls')),
-    path('', RedirectView.as_view(url='encounters/', permanent=True)),
     path('accounts/login/', auth_views.LoginView.as_view(template_name='mylogin.html')),
     path('accounts/', include('django.contrib.auth.urls')),
-   
+    #cfm added
+    # encounters.urls is registered last so its 'logout' url name wins over
+    # the one from django.contrib.auth.urls (which is POST-only and would
+    # otherwise shadow it, breaking the GET-based Log Out link)
+    path('encounters/', include('encounters.urls')),
+    path('', RedirectView.as_view(url='encounters/', permanent=True)),
 ]
 
 #cfm added

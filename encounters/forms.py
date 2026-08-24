@@ -12,6 +12,8 @@ class ampmDateTimeInput(DateTimeInput):
     def value_from_datadict(self, data, files, name):
         ACCEPTED_FORMATS = [self.format] + formats.ISO_INPUT_FORMATS['DATETIME_INPUT_FORMATS']
         orig_value = super(ampmDateTimeInput, self).value_from_datadict(data, files, name)
+        if orig_value is None:
+            return None
         value = None
         for format in ACCEPTED_FORMATS:
             try:
