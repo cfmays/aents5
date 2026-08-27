@@ -1,41 +1,20 @@
 from django.db.models.fields import CharField, IntegerField, TextField
 from django.forms import ModelForm, Textarea, IntegerField, CharField, DateTimeField, TextInput, Form
 from django.forms.widgets import DateTimeInput
-from django.utils import timezone, formats
 from encounters.models import Encounter, Animal_Type, Animal
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.models import User
 from django import forms
-import datetime
 
-class ampmDateTimeInput(DateTimeInput):
-    def value_from_datadict(self, data, files, name):
-        ACCEPTED_FORMATS = [self.format] + formats.ISO_INPUT_FORMATS['DATETIME_INPUT_FORMATS']
-        orig_value = super(ampmDateTimeInput, self).value_from_datadict(data, files, name)
-        if orig_value is None:
-            return None
-        value = None
-        for format in ACCEPTED_FORMATS:
-            try:
-                value = timezone.datetime.strptime(orig_value, self.format)
-            except ValueError:
-                # This is not a datetime in the this format; keep going
-                pass
-            else:
-                break
-        if value is None:
-            # We didn't find a format that works, pass back the original
-            value = orig_value
-        return value
 
-class ampmDateTimeInput2(DateTimeInput):
-    def value_from_datadict(self, data, files, name):
-        #orig_value = super(ampmDateTimeInput2, self).value_from_datadict(data, files, name)
-        #print (orig_value)
-        # since I don't use the value of that field at all, just return something that will validate
-        value = datetime.datetime.now()
-        return value
-        
+# HTML5 datetime picker. The browser submits "YYYY-MM-DDTHH:MM", which
+# Django's DateTimeField parses natively; the matching format string makes
+# the initial value show up in the picker.
+def datetime_local_widget(**attrs):
+    attrs['type'] = 'datetime-local'
+    return DateTimeInput(format='%Y-%m-%dT%H:%M', attrs=attrs)
+
+
 def _bootstrap_fields(form):
     # add the Bootstrap CSS class to every widget so form.as_p looks tidy
     for field in form.fields.values():
@@ -56,7 +35,7 @@ class Open_Encounter_Form(ModelForm):
             'crate_time': TextInput(attrs={'min':0,'max': '1000000','type': 'number'}),
             'holding_time': TextInput(attrs={'min':0,'max': '1000000','type': 'number'}),
             'comments': Textarea(attrs={'rows': 4, 'cols': 40}),
-            'encounter_date': ampmDateTimeInput(format='%m/%d/%Y  %I:%M %p', attrs={'size': '24'}),
+            'encounter_date': datetime_local_widget(),
         }
 
     def __init__(self, *args, **kwargs):
@@ -65,10 +44,9 @@ class Open_Encounter_Form(ModelForm):
         _bootstrap_fields(self)
 
 class encounter_update_form(ModelForm):
-    endTimeField = DateTimeField(label='Time returned', 
-        initial=datetime.datetime.now(), 
-        widget=ampmDateTimeInput2(format='%m/%d%Y  %I:%M %p', attrs={'size':'24','tabindex':50}),
-        required= False)
+    endTimeField = DateTimeField(label='Time returned',
+        widget=datetime_local_widget(tabindex=50),
+        required=False)  # display helper only; the JavaScript keeps it in sync
     totalTimeField = IntegerField(label='Total Minutes', 
         widget=TextInput(attrs={'min':0,'max': '1000000','type': 'number','tabindex':51}), 
         required=False,
@@ -82,7 +60,7 @@ class encounter_update_form(ModelForm):
             'crate_time': TextInput(attrs={'min':0,'max': '1000000','type': 'number'}),
             'holding_time': TextInput(attrs={'min':0,'max': '1000000','type': 'number'}),
             'comments': Textarea(attrs={'rows': 4, 'cols': 40}),
-            'encounter_date': ampmDateTimeInput(format='%m/%d/%Y  %I:%M %p', attrs={'size':'24'}),
+            'encounter_date': datetime_local_widget(),
         }
     
     def __init__(self, *args, **kwargs):

@@ -10,42 +10,19 @@
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
-function ampmFormat(theDate) {
-    //console.log('in ampmFormat, theDate= ', theDate);
-    var lclDate = new Date(theDate);
-    if (lclDate.getHours() > 11) {
-        theSuffix = 'PM';
-        lclDate.setHours(lclDate.getHours() - 12);
-    } else {
-        theSuffix = 'AM';
-    }
-    var theMinuteStr;
-    if (lclDate.getMinutes().toString().length < 2) {
-        theMinuteStr = '0' + lclDate.getMinutes();
-    } else {
-        theMinuteStr = lclDate.getMinutes();
-    }    
-    if (lclDate.getHours().toString().length < 2) {
-        var theHourStr = '0' + lclDate.getHours();
-    } else {
-        theHourStr = lclDate.getHours();
-    } // don't forget month is zero based
-    var theDateStr = (lclDate.getMonth() + 1) + '/' + lclDate.getDate() + '/' + lclDate.getFullYear() + '  ' + theHourStr + ':' + theMinuteStr + ' ' + theSuffix;
-    return theDateStr;
+// format a Date as the local "YYYY-MM-DDTHH:MM" string a datetime-local input needs
+function toDatetimeLocal(theDate) {
+    var d = new Date(theDate);
+    var pad = function (n) { return String(n).padStart(2, '0'); };
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) +
+        'T' + pad(d.getHours()) + ':' + pad(d.getMinutes());
 }
 
 function getTotalMinutes() {
-    //console.log('in getTotalMinutes');
     var theEndTime = new Date(document.getElementById('id_endTimeField').value);
     var theStartTime = new Date(document.getElementById('id_encounter_date').value);
     var theMinutes = Math.round((theEndTime - theStartTime)/60000);
-    //console.log('calculated: ', theMinutes);
     return theMinutes;
-}
-
-function reviseEndTime() {
-    var theStartTime = new Date(document.getElementById('id_encounter_date').value);
-
 }
 
 $(document).ready(function(){
@@ -79,11 +56,8 @@ $(document).ready(function(){
     //console.log('theEndTime:', theEndTime);
     document.getElementById('id_totalTimeField').value = theMinutes;
 
-    // format the date
-    //console.log('end time bewfore formatting:', theEndTime);
-    var theDateStr = ampmFormat(theEndTime);
-    document.getElementById('id_endTimeField').value = theDateStr;
-    //console.log('after formatting:', theDateStr);
+    // show the calculated return time in the datetime-local field
+    document.getElementById('id_endTimeField').value = toDatetimeLocal(theEndTime);
 });
 
 $("#id_handling_time").change(function () {

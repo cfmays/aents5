@@ -70,7 +70,7 @@ class OpenEncounterViewTests(ViewTestBase):
     def test_valid_post_creates_encounter(self):
         self.client.login(username='handler', password='pw')
         response = self.client.post(reverse('openencounter'), data={
-            'encounter_date': '08/24/2026  09:00 AM',
+            'encounter_date': '2026-08-24T09:00',
             'animal': self.animal.pk,
             'user': self.user.pk,
         })
@@ -121,7 +121,7 @@ class EncounterDetailViewTests(ViewTestBase):
         response = self.client.post(
             reverse('encounter-detail', kwargs={'pk': self.encounter.pk}),
             data={
-                'encounter_date': '08/24/2026  09:00 AM',
+                'encounter_date': '2026-08-24T09:00',
                 'animal': self.animal.pk,
                 'user': self.user.pk,
                 'handling_time': 15,
