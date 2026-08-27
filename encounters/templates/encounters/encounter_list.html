@@ -1,21 +1,38 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-  <h1>Encounters</h1>
-  {% comment %} <p>encounter_list.html</p> {% endcomment %}
+  <h1>Today's Encounters</h1>
+
   {% if encounter_list %}
-  <ul>
-      {% for enc in encounter_list %}
-      <li>
-      {% if enc.handling_time == null and enc.crate_time == null  and enc.handling_time == null %}
-        <a href="{% url 'encounter-detail' enc.pk %}" style="color:Red">{{enc.encounter_date}} -- {{enc.user}}~{{ enc.animal }} </a>
-      {% else %}
-        <a href="{% url 'encounter-detail' enc.pk %}" style="color:black">{{enc.encounter_date}} -- {{enc.user}}~{{ enc.animal }} </a>
-      {% endif %}
-      </li>
-      {% endfor %}
-   </ul>
+  <div class="table-responsive">
+    <table class="table table-striped table-records">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Handler</th>
+          <th>Animal</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for enc in encounter_list %}
+        <tr data-href="{% url 'encounter-detail' enc.pk %}">
+          <td>{{ enc.encounter_date }}</td>
+          <td>{{ enc.user }}</td>
+          <td>{{ enc.animal }}</td>
+          <td>
+            {% if enc.is_open %}
+              <span class="badge badge-warning">Open</span>
+            {% else %}
+              <span class="badge badge-success">Closed</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
   {% else %}
-    <p>There are no encounters to display.</p>
+    <p class="text-muted">There are no encounters to display.</p>
   {% endif %}
 {% endblock %}

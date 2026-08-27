@@ -1,21 +1,18 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    <h1>Animals</h1>
-    <h3>{{ theAnimalType }}</h3>
-    {% comment %} <h3>User: {{ user.username }}</h3> {% endcomment %}
-    {% comment %} <p>animal_list_form.html</p> {% endcomment %}
-    {% if animal_list %}
-    <ul>
-      {% for ani in animal_list %}
-        <li>
-          <a href="{% url 'encounters-by-animal' ani.pk %}"> {{ ani.Name }} </a>
-        </li>
-      {% endfor %}
-    </ul>
-    {% else %}
-      <p>There are no animals for this type.</p>
-    {% endif %}
-{% endblock %}
+  <h1>Animals</h1>
+  <h3 class="text-muted">{{ theAnimalType }}</h3>
 
-  
+  {% if animal_list %}
+  <div class="list-group" style="max-width: 480px;">
+    {% for ani in animal_list %}
+      <a class="list-group-item list-group-item-action" href="{% url 'encounters-by-animal' ani.pk %}">
+        {{ ani.Name }}
+      </a>
+    {% endfor %}
+  </div>
+  {% else %}
+    <p class="text-muted">There are no animals for this type.</p>
+  {% endif %}
+{% endblock %}

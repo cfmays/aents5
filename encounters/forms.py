@@ -36,6 +36,14 @@ class ampmDateTimeInput2(DateTimeInput):
         value = datetime.datetime.now()
         return value
         
+def _bootstrap_fields(form):
+    # add the Bootstrap CSS class to every widget so form.as_p looks tidy
+    for field in form.fields.values():
+        css = 'form-control'
+        existing = field.widget.attrs.get('class', '')
+        field.widget.attrs['class'] = (existing + ' ' + css).strip()
+
+
 class Open_Encounter_Form(ModelForm):
     numPerDayField = CharField(label='Today\'s uses',disabled=True,required=False)
     animalCommentsField = CharField(label='Animal comments', max_length=360, disabled=True,required=False)
@@ -52,9 +60,9 @@ class Open_Encounter_Form(ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        super(Open_Encounter_Form, self).__init__(*args, **kwargs)   
+        super(Open_Encounter_Form, self).__init__(*args, **kwargs)
         self.fields['user'].queryset = User.objects.order_by('username')
-        #print (User.objects)
+        _bootstrap_fields(self)
 
 class encounter_update_form(ModelForm):
     endTimeField = DateTimeField(label='Time returned', 
@@ -78,9 +86,9 @@ class encounter_update_form(ModelForm):
         }
     
     def __init__(self, *args, **kwargs):
-        super(encounter_update_form, self).__init__(*args, **kwargs)   
+        super(encounter_update_form, self).__init__(*args, **kwargs)
         self.fields['user'].queryset = User.objects.order_by('username')
-        #print (User.objects)
+        _bootstrap_fields(self)
 
 class export_options_form(Form):
     startDate = forms.DateField(label="Starting Date", required=False)
@@ -88,3 +96,7 @@ class export_options_form(Form):
     animalType = forms.ModelChoiceField(label='Animal Type', queryset=Animal_Type.objects.all(), required=False)
     animals = forms.ModelChoiceField(label='Single Animal', queryset=Animal.objects.all(), required=False)
     users = forms.ModelChoiceField(label='Handler', queryset=User.objects.order_by('username'), required=False)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        _bootstrap_fields(self)

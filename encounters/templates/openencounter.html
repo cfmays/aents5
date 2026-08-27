@@ -2,14 +2,10 @@
 
 {% block content %}
 <h1>New Encounter</h1>
-{% comment %} <p>openencounter.html</p> {% endcomment %}
-<form action="/encounters/openencounter/" method="post">
+<form action="/encounters/openencounter/" method="post" class="form-card">
     {% csrf_token %}
-   
-   
-
     {{ form.as_p }}
-    <input type="submit" value="Submit">
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>

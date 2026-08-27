@@ -50,6 +50,11 @@ class Encounter(SafeDeleteModel):
     def get_absolute_url(self):
         return reverse("encounter-detail", kwargs={"pk": self.pk})
 
+    @property
+    def is_open(self):
+        # no time logged yet means the animal is still out
+        return not (self.handling_time or self.crate_time or self.holding_time)
+
     def get_total_minutes(self):
         handling_time = self.handling_time or 0
         crate_time = self.crate_time or 0

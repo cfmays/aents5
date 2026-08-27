@@ -1,11 +1,10 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-{% comment %} <form action="/encounters/encounter_detail/" method="get"> {% endcomment %}
-<form>
+<h1>Encounter</h1>
+<form class="form-card">
     {% csrf_token %}
-    <p>In encounter_detail.html</p>
     {{ form.as_p }}
-    <input type="submit" value="Submit">
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 {% endblock %}

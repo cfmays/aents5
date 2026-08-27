@@ -2,14 +2,9 @@
 
 {% block content %}
 <h1>Update Encounter</h1>
-    {% comment %} <p>encounter_update_form.html</p> {% endcomment %}
-        <form method="post">{% csrf_token %}
-            
-            {{form.as_p}}
-
-
-
-            <input type="submit" value="Update">
+        <form method="post" class="form-card">{% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Update</button>
             <a href="{{ view.get_success_url }}" class="btn btn-secondary">Cancel</a>
         </form>
 
@@ -134,5 +129,4 @@ $("#id_endTimeField").change(function() {
 })
 
 </script>
-    </p>
 {% endblock %}

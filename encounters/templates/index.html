@@ -1,12 +1,33 @@
-{% extends "base_generic.html" %} {% block content %}
-<h1>Animal Encounters</h1>
-<p>Welcome to Animal Encounters</p>
-<h2>Status</h2>
+{% extends "base_generic.html" %}
 
-<p>The database has the following record counts:</p>
-<ul>
-  <li><strong>Animals:</strong> {{ num_animals }}</li>
-  <li><strong>Users:</strong> {{ num_users }}</li>
-  <li><strong>Encounters:</strong> {{ num_encounters }}</li>
-</ul>
+{% block content %}
+<h1>Animal Encounters</h1>
+<p class="lead">Welcome to Animal Encounters.</p>
+
+<div class="row mt-4">
+  <div class="col-sm-4 mb-3">
+    <div class="card text-center">
+      <div class="card-body">
+        <h2 class="card-title">{{ num_animals }}</h2>
+        <p class="card-text text-muted">Animals</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4 mb-3">
+    <div class="card text-center">
+      <div class="card-body">
+        <h2 class="card-title">{{ num_users }}</h2>
+        <p class="card-text text-muted">Users</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4 mb-3">
+    <div class="card text-center">
+      <div class="card-body">
+        <h2 class="card-title">{{ num_encounters }}</h2>
+        <p class="card-text text-muted">Encounters</p>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
