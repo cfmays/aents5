@@ -18,6 +18,7 @@ class OpenEncounterFormTests(TestCase):
             'encounter_date': '2026-08-24T10:00',  # format an <input type=datetime-local> submits
             'animal': self.animal.pk,
             'user': self.user.pk,
+            'participation': 'participated',
         })
         self.assertTrue(form.is_valid(), form.errors)
         self.assertEqual(form.cleaned_data['encounter_date'], datetime.datetime(2026, 8, 24, 10, 0))
@@ -25,7 +26,7 @@ class OpenEncounterFormTests(TestCase):
     def test_missing_required_fields(self):
         form = Open_Encounter_Form(data={})
         self.assertFalse(form.is_valid())
-        for field in ('encounter_date', 'animal', 'user'):
+        for field in ('encounter_date', 'animal', 'user', 'participation'):
             self.assertIn(field, form.errors)
 
 

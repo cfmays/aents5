@@ -35,10 +35,18 @@ class Animal(SafeDeleteModel):
         ordering = ['Animal_Type']
 
 class Encounter(SafeDeleteModel):
+    PARTICIPATED = 'participated'
+    REFUSED = 'refused'
+    PARTICIPATION_CHOICES = [
+        (PARTICIPATED, 'Participated'),
+        (REFUSED, 'Refused'),
+    ]
+
     _safedelete_policy = SOFT_DELETE
     encounter_date = models.DateTimeField()
     animal = models.ForeignKey(Animal, on_delete=models.PROTECT)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='Handler')
+    participation = models.CharField(max_length=16, choices=PARTICIPATION_CHOICES, default=PARTICIPATED)
     handling_time = models.BigIntegerField(blank=True, null=True)
     crate_time = models.BigIntegerField(blank=True, null=True)
     holding_time = models.BigIntegerField(blank=True, null=True)

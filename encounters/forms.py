@@ -17,7 +17,10 @@ def datetime_local_widget(**attrs):
 
 def _bootstrap_fields(form):
     # add the Bootstrap CSS class to every widget so form.as_p looks tidy
+    # (radio/checkbox groups use their own Bootstrap classes, so skip those)
     for field in form.fields.values():
+        if isinstance(field.widget, (forms.RadioSelect, forms.CheckboxSelectMultiple)):
+            continue
         css = 'form-control'
         existing = field.widget.attrs.get('class', '')
         field.widget.attrs['class'] = (existing + ' ' + css).strip()
@@ -28,19 +31,21 @@ class Open_Encounter_Form(ModelForm):
     animalCommentsField = CharField(label='Animal comments', max_length=360, disabled=True,required=False)
 
     class Meta:
-        model = Encounter        
-        fields = ['encounter_date','animal','numPerDayField','animalCommentsField','user','handling_time','crate_time','holding_time','comments']
+        model = Encounter
+        fields = ['encounter_date','animal','numPerDayField','animalCommentsField','participation','user','handling_time','crate_time','holding_time','comments']
         widgets = {
             'handling_time': TextInput(attrs={'min':0,'max': '1000000','type': 'number'}),
             'crate_time': TextInput(attrs={'min':0,'max': '1000000','type': 'number'}),
             'holding_time': TextInput(attrs={'min':0,'max': '1000000','type': 'number'}),
             'comments': Textarea(attrs={'rows': 4, 'cols': 40}),
             'encounter_date': datetime_local_widget(),
+            'participation': forms.RadioSelect(),
         }
 
     def __init__(self, *args, **kwargs):
         super(Open_Encounter_Form, self).__init__(*args, **kwargs)
         self.fields['user'].queryset = User.objects.order_by('username')
+        self.fields['participation'].initial = None
         _bootstrap_fields(self)
 
 class encounter_update_form(ModelForm):

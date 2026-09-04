@@ -36,11 +36,60 @@ $("#id_animal").change(function () {
             
             theStr=data['theAnimalComments'];
             $("#id_animalCommentsField").val(theStr);
-            
+
         }
     });
 })
 
+// progressive disclosure: only show fields relevant to the current step
+// walk up from the field to whichever element as_p() put directly in the form
+// (usually a <p>, but a RadioSelect's options sit in a bare <div>)
+function fieldRow(id) {
+    var el = document.getElementById(id);
+    if (!el) return $();
+    while (el.parentElement && el.parentElement.tagName !== "FORM") {
+        el = el.parentElement;
+    }
+    return $(el);
+}
+
+function updateFieldVisibility() {
+    var animalChosen = $("#id_animal").val();
+    var participationRow = fieldRow("id_participation_0");
+    var afterAnimalRows = fieldRow("id_numPerDayField")
+        .add(fieldRow("id_animalCommentsField"))
+        .add(participationRow.prev("p"))
+        .add(participationRow);
+    var participationValue = $("input[name='participation']:checked").val();
+    var commentsRow = fieldRow("id_comments");
+    var participatedOnlyRows = fieldRow("id_handling_time")
+        .add(fieldRow("id_crate_time"))
+        .add(fieldRow("id_holding_time"));
+
+    if (animalChosen) {
+        afterAnimalRows.show();
+    } else {
+        afterAnimalRows.hide();
+        participationValue = undefined;
+    }
+
+    if (participationValue === "refused") {
+        commentsRow.show();
+        participatedOnlyRows.hide();
+    } else if (participationValue === "participated") {
+        commentsRow.show();
+        participatedOnlyRows.show();
+    } else {
+        commentsRow.hide();
+        participatedOnlyRows.hide();
+    }
+}
+
+$(document).ready(function () {
+    updateFieldVisibility();
+    $("#id_animal").change(updateFieldVisibility);
+    $("input[name='participation']").change(updateFieldVisibility);
+});
 </script>
 
 {% endblock %}

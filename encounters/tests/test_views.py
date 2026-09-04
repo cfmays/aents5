@@ -73,6 +73,7 @@ class OpenEncounterViewTests(ViewTestBase):
             'encounter_date': '2026-08-24T09:00',
             'animal': self.animal.pk,
             'user': self.user.pk,
+            'participation': 'participated',
         })
         self.assertRedirects(response, reverse('index'))
         self.assertEqual(Encounter.objects.count(), 2)
