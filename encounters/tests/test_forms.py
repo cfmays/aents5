@@ -23,6 +23,13 @@ class OpenEncounterFormTests(TestCase):
         self.assertTrue(form.is_valid(), form.errors)
         self.assertEqual(form.cleaned_data['encounter_date'], datetime.datetime(2026, 8, 24, 10, 0))
 
+    def test_inactive_animals_not_in_dropdown(self):
+        retired = Animal.objects.create(Name='Old Kevin', Animal_Type=self.animal.Animal_Type,
+                                        Inactive_Date=datetime.date.today())
+        choices = Open_Encounter_Form().fields['animal'].queryset
+        self.assertIn(self.animal, choices)
+        self.assertNotIn(retired, choices)
+
     def test_missing_required_fields(self):
         form = Open_Encounter_Form(data={})
         self.assertFalse(form.is_valid())
