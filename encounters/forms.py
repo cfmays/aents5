@@ -44,7 +44,8 @@ class Open_Encounter_Form(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(Open_Encounter_Form, self).__init__(*args, **kwargs)
-        self.fields['user'].queryset = User.objects.order_by('username')
+        # hide users whose account is marked inactive
+        self.fields['user'].queryset = User.objects.filter(is_active=True).order_by('username')
         # hide animals a supervisor has marked inactive
         self.fields['animal'].queryset = Animal.objects.filter(Inactive_Date__isnull=True)
         self.fields['participation'].initial = None

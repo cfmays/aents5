@@ -30,6 +30,12 @@ class OpenEncounterFormTests(TestCase):
         self.assertIn(self.animal, choices)
         self.assertNotIn(retired, choices)
 
+    def test_inactive_users_not_in_dropdown(self):
+        former = get_user_model().objects.create_user(username='former', password='pw', is_active=False)
+        choices = Open_Encounter_Form().fields['user'].queryset
+        self.assertIn(self.user, choices)
+        self.assertNotIn(former, choices)
+
     def test_missing_required_fields(self):
         form = Open_Encounter_Form(data={})
         self.assertFalse(form.is_valid())
