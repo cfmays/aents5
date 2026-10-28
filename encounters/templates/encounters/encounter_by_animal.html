@@ -10,7 +10,7 @@
       <thead>
         <tr>
           <th>Date</th>
-          <th>Handler</th>
+          <th>Retrieval Handler</th>
           <th>Animal</th>
           <th>Comments</th>
           <th>Status</th>
@@ -21,7 +21,7 @@
         <tr data-href="{% url 'encounter-detail' enc.pk %}">
           <td>{{ enc.encounter_date }}</td>
           <td>{{ enc.user }}</td>
-          <td>{{ enc.animal }}</td>
+          <td>{{ enc.animal }}{% if enc.companion %} + {{ enc.companion }}{% endif %}</td>
           <td>{{ enc.comments|default:"" }}</td>
           <td>
             {% if enc.is_open %}

@@ -18,7 +18,7 @@
         {% for enc in encounter_list %}
         <tr data-href="{% url 'encounter-detail' enc.pk %}">
           <td>{{ enc.encounter_date }}</td>
-          <td>{{ enc.animal }}</td>
+          <td>{{ enc.animal }}{% if enc.companion %} + {{ enc.companion }}{% endif %}</td>
           <td>
             {% if enc.is_open %}
               <span class="badge badge-warning">Open</span>

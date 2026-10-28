@@ -20,7 +20,7 @@
         {% for encounter in encounter_list %}
         <tr data-href="{% url 'encounter-detail' encounter.pk %}">
           <td>{{ encounter.encounter_date }}</td>
-          <td>{{ encounter.animal }}</td>
+          <td>{{ encounter.animal }}{% if encounter.companion %} + {{ encounter.companion }}{% endif %}</td>
           <td class="text-right">{{ encounter.handling_time|default_if_none:"—" }}</td>
           <td class="text-right">{{ encounter.crate_time|default_if_none:"—" }}</td>
           <td class="text-right">{{ encounter.holding_time|default_if_none:"—" }}</td>

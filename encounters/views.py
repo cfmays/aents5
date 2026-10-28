@@ -21,6 +21,17 @@ from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 import csv
+from django.db.models import Q
+
+
+EXPORT_HEADINGS = ['Date/Time', 'Animal', 'Companion', 'Retrieval Handler', 'Presentation Handler',
+    'Return Handler', 'Participation', 'Handling Time', 'Crate Time', 'Holding time', 'Comments']
+
+def export_row(enc):
+    # one CSV row per encounter; matches EXPORT_HEADINGS
+    return [enc.encounter_date, enc.animal, enc.companion or '', enc.user, enc.presentation_handler or '',
+        enc.return_handler or '', enc.get_participation_display(), enc.handling_time, enc.crate_time,
+        enc.holding_time, enc.comments]
 
 def index(request):
     # if not request.user.is_authenticated:
@@ -62,7 +73,8 @@ class EncountersByUserListView(LoginRequiredMixin, generic.ListView):
     
     def get_queryset(self):
         
-       return Encounter.objects.filter(user=self.request.user).order_by('-encounter_date')[:10]
+       me = self.request.user
+       return Encounter.objects.filter(Q(user=me) | Q(presentation_handler=me) | Q(return_handler=me)).order_by('-encounter_date')[:10]
 
 class AllEncountersListView(generic.ListView):
     paginate_by = 20   
@@ -140,7 +152,7 @@ class EncountersByAnimalListView(generic.ListView):
     def get_queryset(self):
         #print(self.kwargs)
         thePK = self.kwargs['pk']
-        qs = Encounter.objects.all().filter(animal=thePK).order_by('-encounter_date')
+        qs = Encounter.objects.filter(Q(animal=thePK) | Q(companion=thePK)).order_by('-encounter_date')
         return qs 
 
     def get_context_data(self, **kwargs):
@@ -155,7 +167,7 @@ class EncountersByAnimalListView(generic.ListView):
 def load_animal_uses(request):
     # #print('in function load_animal_uses()')
     animal_id = request.GET.get('animal')
-    uses = Encounter.objects.filter(animal=animal_id, encounter_date__gte = datetime.datetime.now().date()).count()
+    uses = Encounter.objects.filter(Q(animal=animal_id) | Q(companion=animal_id), encounter_date__gte = datetime.datetime.now().date()).count()
     theMax = Animal.objects.filter(id = animal_id).values('Max_Daily')[0]['Max_Daily']
     theAnimalComments = Animal.objects.filter(id = animal_id).values('Comments')[0]['Comments']
     #print (theMax)
@@ -180,11 +192,10 @@ def export_data_view(request):
     )
 
     writer = csv.writer(response)
-    writer.writerow(['Date/Time', 'Animal', 'User', 'Handling Time', 'Crate Time', 'Holding time', 'Comments'])
+    writer.writerow(EXPORT_HEADINGS)
     qs = Encounter.objects.all().order_by('-encounter_date')
     for enc in qs:
-        aRow = [enc.encounter_date, enc.animal, enc.user, enc.handling_time, enc.crate_time, enc.holding_time, enc.comments]
-        writer.writerow(aRow)
+        writer.writerow(export_row(enc))
     return response
 
 
@@ -206,15 +217,17 @@ def export_data(request):
                     qs = qs.filter(encounter_date__lte=form.cleaned_data['endDate'])
                     #print (qs)
                 if form.cleaned_data['animals'] is not None:
-                    qs = qs.filter(animal = form.cleaned_data['animals'])
+                    qs = qs.filter(Q(animal=form.cleaned_data['animals']) | Q(companion=form.cleaned_data['animals']))
                     #print (qs)
                 elif form.cleaned_data['animalType'] is not None:
                     #print('animaltype is ')
                     #print(form.cleaned_data['animalType'])
-                    qs = qs.filter(animal__Animal_Type__animal_type = form.cleaned_data['animalType'])
+                    theType = form.cleaned_data['animalType']
+                    qs = qs.filter(Q(animal__Animal_Type=theType) | Q(companion__Animal_Type=theType))
                     #print(qs)
                 if form.cleaned_data['users'] is not None:
-                    qs = qs.filter(user=form.cleaned_data['users'])
+                    theUser = form.cleaned_data['users']
+                    qs = qs.filter(Q(user=theUser) | Q(presentation_handler=theUser) | Q(return_handler=theUser))
                     #print(qs)
                 # now I have the appropriate qs; download
 
@@ -224,10 +237,9 @@ def export_data(request):
                 )
 
                 writer = csv.writer(response)
-                writer.writerow(['Date/Time', 'Animal', 'User', 'Handling Time', 'Crate Time', 'Holding time', 'Comments'])
+                writer.writerow(EXPORT_HEADINGS)
                 for enc in qs:
-                    aRow = [enc.encounter_date, enc.animal, enc.user, enc.handling_time, enc.crate_time, enc.holding_time, enc.comments]
-                    writer.writerow(aRow)
+                    writer.writerow(export_row(enc))
                 return response
 
 

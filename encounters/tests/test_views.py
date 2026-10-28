@@ -186,8 +186,10 @@ class ExportDataViewTests(ViewTestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'text/csv')
         rows = list(csv.reader(io.StringIO(response.content.decode())))
-        self.assertEqual(rows[0], ['Date/Time', 'Animal', 'User', 'Handling Time', 'Crate Time', 'Holding time', 'Comments'])
+        self.assertEqual(rows[0], ['Date/Time', 'Animal', 'Companion', 'Retrieval Handler', 'Presentation Handler',
+            'Return Handler', 'Participation', 'Handling Time', 'Crate Time', 'Holding time', 'Comments'])
         self.assertEqual(len(rows), 2)
+        self.assertEqual(rows[1][6], 'Participated')
 
 
 class ExportOptionsViewTests(ViewTestBase):
@@ -204,7 +206,27 @@ class ExportOptionsViewTests(ViewTestBase):
         self.assertEqual(response['Content-Type'], 'text/csv')
         rows = list(csv.reader(io.StringIO(response.content.decode())))
         self.assertEqual(len(rows), 2)  # header + one matching encounter
-        self.assertIn('other', rows[1][2])
+        self.assertIn('other', rows[1][3])
+
+    def test_post_filter_by_user_includes_presentation_and_return_roles(self):
+        other_user = get_user_model().objects.create_user(username='other', password='pw')
+        Encounter.objects.create(encounter_date=timezone.now(), animal=self.animal, user=self.user,
+            presentation_handler=other_user)
+        Encounter.objects.create(encounter_date=timezone.now(), animal=self.animal, user=self.user,
+            return_handler=other_user)
+
+        response = self.client.post(reverse('export-options'), data={'users': other_user.pk})
+        rows = list(csv.reader(io.StringIO(response.content.decode())))
+        self.assertEqual(len(rows), 3)  # header + two matching encounters
+
+    def test_post_filter_by_animal_includes_companion(self):
+        buddy = Animal.objects.create(Name='Buddy', Animal_Type=self.animal_type)
+        Encounter.objects.create(encounter_date=timezone.now(), animal=self.animal, companion=buddy, user=self.user)
+
+        response = self.client.post(reverse('export-options'), data={'animals': buddy.pk})
+        rows = list(csv.reader(io.StringIO(response.content.decode())))
+        self.assertEqual(len(rows), 2)
+        self.assertIn('Buddy', rows[1][2])
 
 
 class LogoutViewTests(ViewTestBase):
@@ -214,3 +236,20 @@ class LogoutViewTests(ViewTestBase):
         self.assertRedirects(response, reverse('my-encounters'), target_status_code=302)
         response = self.client.get(reverse('my-encounters'))
         self.assertEqual(response.status_code, 302)  # no longer logged in
+
+
+class AnnouncementTests(ViewTestBase):
+    def test_shows_once_per_user(self):
+        self.client.login(username='handler', password='pw')
+        self.assertContains(self.client.get(reverse('index')), 'announcementModal')
+        self.assertNotContains(self.client.get(reverse('index')), 'announcementModal')
+
+    def test_each_user_sees_it(self):
+        get_user_model().objects.create_user(username='other', password='pw')
+        self.client.login(username='handler', password='pw')
+        self.client.get(reverse('index'))
+        self.client.login(username='other', password='pw')
+        self.assertContains(self.client.get(reverse('index')), 'announcementModal')
+
+    def test_not_shown_when_logged_out(self):
+        self.assertNotContains(self.client.get(reverse('index')), 'announcementModal')

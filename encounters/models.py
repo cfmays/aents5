@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models import Q
+from django.core.exceptions import ValidationError
 from django.conf import settings
 import datetime
 from datetime import timedelta
@@ -25,7 +27,8 @@ class Animal(SafeDeleteModel):
     Comments = models.TextField(blank=True)
     def todays_encounters(self):
         theLimitDate = datetime.datetime.today() - timedelta(days=1)
-        aQs = self.encounter_set.filter(encounter_date__gte = theLimitDate)
+        # count encounters as the main animal or as the companion
+        aQs = Encounter.objects.filter(Q(animal=self) | Q(companion=self), encounter_date__gte = theLimitDate)
         return aQs.count()
     def __str__(self) -> str:
         aStr = self.Animal_Type.__str__() + ' ' + self.Name
@@ -36,16 +39,25 @@ class Animal(SafeDeleteModel):
 
 class Encounter(SafeDeleteModel):
     PARTICIPATED = 'participated'
-    REFUSED = 'refused'
+    REFUSED = 'refused'  # stored value kept as 'refused' so older records still match
+    REFUSED_PROGRAM = 'refused_program'
     PARTICIPATION_CHOICES = [
         (PARTICIPATED, 'Participated'),
-        (REFUSED, 'Refused'),
+        (REFUSED, 'Refused at the start'),
+        (REFUSED_PROGRAM, 'Refused at the program'),
     ]
 
     _safedelete_policy = SOFT_DELETE
     encounter_date = models.DateTimeField()
     animal = models.ForeignKey(Animal, on_delete=models.PROTECT)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='Handler')
+    companion = models.ForeignKey(Animal, on_delete=models.PROTECT, null=True, blank=True,
+        related_name='companion_encounters')
+    # 'user' is the Retrieval handler (field name kept from when there was only one handler)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='Retrieval Handler')
+    presentation_handler = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT,
+        null=True, blank=True, related_name='presentation_encounters', verbose_name='Presentation Handler')
+    return_handler = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT,
+        null=True, blank=True, related_name='return_encounters', verbose_name='Return Handler')
     participation = models.CharField(max_length=16, choices=PARTICIPATION_CHOICES, default=PARTICIPATED)
     handling_time = models.BigIntegerField(blank=True, null=True)
     crate_time = models.BigIntegerField(blank=True, null=True)
@@ -55,6 +67,10 @@ class Encounter(SafeDeleteModel):
     def __str__(self) -> str:
         return self.user.username + '/' + self.animal.Name
     
+    def clean(self):
+        if self.companion_id and self.companion_id == self.animal_id:
+            raise ValidationError({'companion': 'The companion must be a different animal.'})
+
     def get_absolute_url(self):
         return reverse("encounter-detail", kwargs={"pk": self.pk})
 
@@ -75,3 +91,12 @@ class Encounter(SafeDeleteModel):
         return theMinutes
 
 
+
+
+class AnnouncementSeen(models.Model):
+    # one row per user per announcement they have already been shown
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    announcement = models.CharField(max_length=64)
+
+    class Meta:
+        unique_together = ['user', 'announcement']

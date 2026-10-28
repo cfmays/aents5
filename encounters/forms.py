@@ -32,7 +32,7 @@ class Open_Encounter_Form(ModelForm):
 
     class Meta:
         model = Encounter
-        fields = ['encounter_date','animal','numPerDayField','animalCommentsField','participation','user','handling_time','crate_time','holding_time','comments']
+        fields = ['encounter_date','animal','numPerDayField','animalCommentsField','companion','participation','user','presentation_handler','return_handler','handling_time','crate_time','holding_time','comments']
         widgets = {
             'handling_time': TextInput(attrs={'min':0,'max': '1000000','type': 'number'}),
             'crate_time': TextInput(attrs={'min':0,'max': '1000000','type': 'number'}),
@@ -45,9 +45,14 @@ class Open_Encounter_Form(ModelForm):
     def __init__(self, *args, **kwargs):
         super(Open_Encounter_Form, self).__init__(*args, **kwargs)
         # hide users whose account is marked inactive
-        self.fields['user'].queryset = User.objects.filter(is_active=True).order_by('username')
+        active_users = User.objects.filter(is_active=True).order_by('username')
+        self.fields['user'].queryset = active_users
+        self.fields['presentation_handler'].queryset = active_users
+        self.fields['return_handler'].queryset = active_users
         # hide animals a supervisor has marked inactive
-        self.fields['animal'].queryset = Animal.objects.filter(Inactive_Date__isnull=True)
+        active_animals = Animal.objects.filter(Inactive_Date__isnull=True)
+        self.fields['animal'].queryset = active_animals
+        self.fields['companion'].queryset = active_animals
         self.fields['participation'].initial = None
         _bootstrap_fields(self)
 
@@ -62,7 +67,7 @@ class encounter_update_form(ModelForm):
 
     class Meta:
         model = Encounter        
-        fields = ['encounter_date','animal','user','handling_time','crate_time','holding_time','endTimeField','totalTimeField','comments']
+        fields = ['encounter_date','animal','companion','user','presentation_handler','return_handler','handling_time','crate_time','holding_time','endTimeField','totalTimeField','comments']
         widgets = {
             'handling_time': TextInput(attrs={'min':0,'max': '1000000','type': 'number'}),
             'crate_time': TextInput(attrs={'min':0,'max': '1000000','type': 'number'}),
@@ -73,7 +78,10 @@ class encounter_update_form(ModelForm):
     
     def __init__(self, *args, **kwargs):
         super(encounter_update_form, self).__init__(*args, **kwargs)
-        self.fields['user'].queryset = User.objects.order_by('username')
+        all_users = User.objects.order_by('username')
+        self.fields['user'].queryset = all_users
+        self.fields['presentation_handler'].queryset = all_users
+        self.fields['return_handler'].queryset = all_users
         _bootstrap_fields(self)
 
 class export_options_form(Form):

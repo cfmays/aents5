@@ -31,6 +31,11 @@ class AnimalModelTests(TestCase):
         )
         self.assertEqual(self.animal.todays_encounters(), 1)
 
+    def test_todays_encounters_counts_companion_role(self):
+        other = Animal.objects.create(Name='Leonard', Animal_Type=self.animal_type)
+        Encounter.objects.create(encounter_date=timezone.now(), animal=other, companion=self.animal, user=self.user)
+        self.assertEqual(self.animal.todays_encounters(), 1)
+
     def test_soft_deleted_animal_excluded_from_default_manager(self):
         self.animal.delete()
         self.assertEqual(Animal.objects.count(), 0)
@@ -48,6 +53,11 @@ class EncounterModelTests(TestCase):
             encounter_date=timezone.now(), animal=self.animal, user=self.user
         )
         self.assertEqual(str(encounter), 'handler/Kevin')
+
+    def test_companion_must_differ_from_animal(self):
+        encounter = Encounter(encounter_date=timezone.now(), animal=self.animal, companion=self.animal, user=self.user)
+        with self.assertRaises(ValidationError):
+            encounter.full_clean()
 
     def test_animal_is_required(self):
         encounter = Encounter(encounter_date=timezone.now(), user=self.user)

@@ -58,6 +58,7 @@ function updateFieldVisibility() {
     var participationRow = fieldRow("id_participation_0");
     var afterAnimalRows = fieldRow("id_numPerDayField")
         .add(fieldRow("id_animalCommentsField"))
+        .add(fieldRow("id_companion"))
         .add(participationRow.prev("p"))
         .add(participationRow);
     var participationValue = $("input[name='participation']:checked").val();
@@ -74,9 +75,10 @@ function updateFieldVisibility() {
     }
 
     if (participationValue === "refused") {
+        // refused at the start: animal never went out, so no times
         commentsRow.show();
         participatedOnlyRows.hide();
-    } else if (participationValue === "participated") {
+    } else if (participationValue === "participated" || participationValue === "refused_program") {
         commentsRow.show();
         participatedOnlyRows.show();
     } else {

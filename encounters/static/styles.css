@@ -78,3 +78,11 @@ form .helptext {
     font-size: 0.85rem;
     color: #6c757d;
 }
+
+/* form validation errors (Django's errorlist) */
+.errorlist {
+    color: #dc3545;
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0.25rem;
+}
