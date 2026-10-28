@@ -78,6 +78,44 @@ source /home/charley/aents-venv/bin/activate   # so "python" = the venv's python
 
    Then load the site and click through New Encounter / Update Encounter.
 
+## Change the "What's new" pop-up
+
+Each logged-in user sees the pop-up once, the next time they load any page. The
+app records who has seen it in the `AnnouncementSeen` table.
+
+Two files control it:
+
+| File | What it holds |
+|---|---|
+| `encounters/templates/encounters/announcement.html` | The title and message text (plain HTML) |
+| `encounters/templatetags/announcement.py` | `CURRENT_ANNOUNCEMENT`, the name of the current message |
+
+To post a new message:
+
+1. **On your Mac**, edit the title (`What's new`) and the text inside
+   `<div class="modal-body">` in `announcement.html`.
+2. In `announcement.py`, change `CURRENT_ANNOUNCEMENT` to a new name you haven't
+   used before, e.g. `'2027-03-new-animals'`. **This is what makes everyone see
+   it again.** If you only edit the text and keep the old name, users who saw the
+   old message won't see the new one.
+3. Test it locally (`DEBUG=True python manage.py runserver`, then log in).
+   To see it again while testing, run:
+
+   ```bash
+   python manage.py shell -c "from encounters.models import AnnouncementSeen; AnnouncementSeen.objects.all().delete()"
+   ```
+
+   Only run that locally; on the server it would make everyone see the current
+   message again.
+4. Commit, push, and follow "Deploy an update" above. No new migration is
+   needed, but the gunicorn restart (step 6) is, since `announcement.py` is
+   Python code.
+
+To stop showing a message to anyone (including users added later), delete
+the `{% show_announcement %}` line near the bottom of
+`encounters/templates/base_generic.html`. Put it back when you have a new
+message.
+
 ## Rollback
 
 ```bash
